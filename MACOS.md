@@ -6,11 +6,11 @@ Port Map now includes a native `WKWebView` window for the selected Orbit interfa
 - **Dark:** After Hours, with plum/rose colors and larger photos.
 - **System:** follows macOS appearance. The title bar follows the selected mode too.
 
-Swift continues to scan hardware with WhatCable, monitor device changes, condense internal interfaces, and attach the existing manual audio links. The browser interface renders those device relationships and routes. Photos stay visible when selecting a route. Unknown devices get a clearly representative placeholder; larger setups receive an expanded layout. Animated data flow illustrates direction, not measured traffic.
+Swift continues to scan hardware with WhatCable, monitor device changes, condense internal interfaces, and attach the existing manual audio links. The browser interface renders those device relationships and routes. The live layout keeps the Mac mini at the center, retaining the demo arrangement and extending extra devices around the outside. Photos stay visible when selecting a route. Unknown devices get a clearly representative placeholder; larger setups receive an expanded layout. Animated data flow illustrates direction, not measured traffic.
 
 ## Download the app
 
-[Download Port Map 1.5 (build 9), universal Mac app](https://github.com/afilen86/PortMap/releases/download/macos-orbit-v1.5-build9/PortMap-1.5-build9.zip) · [Release details](https://github.com/afilen86/PortMap/releases/tag/macos-orbit-v1.5-build9)
+[Download Port Map 1.5 (build 10), universal Mac app](https://github.com/afilen86/PortMap/releases/download/macos-orbit-v1.5-build10/PortMap-1.5-build10.zip) · [Release details](https://github.com/afilen86/PortMap/releases/tag/macos-orbit-v1.5-build10)
 
 Extract the ZIP in Finder, then move **Port Map.app** to Applications. No developer tools or build step are needed for this download. The beta is ad-hoc signed rather than notarized; macOS may require **Open Anyway** in **System Settings → Privacy & Security**.
 
@@ -48,7 +48,7 @@ The **Appearance & View** menu can switch to the original SwiftUI view. Existing
 
 The smoke check launches the real bundled app in demo mode, waits for `WKWebView` to load, verifies all 19 demo images, switches both approved appearances, and verifies the bridge. It exits with an error if WebKit/JavaScript fails. The universal build contains Apple silicon and Intel binaries. `Build macOS Orbit app` in GitHub Actions runs this on a macOS runner and uploads the app ZIP when successful.
 
-The universal app was compiled and smoke-tested on a real macOS runner in [successful build 43745262359](https://github.com/afilen86/PortMap/actions/runs/43745262359). The published ZIP was downloaded again and verified against its SHA-256 checksum, Info.plist version, universal Mach-O header, bundled Orbit HTML, and code-signature resources. Browser production builds and all 27 browser tests also pass. Live WhatCable discovery still depends on the helper and devices installed on the user's Mac.
+The universal app was compiled and smoke-tested on a real macOS runner in [successful build 43757497773](https://github.com/afilen86/PortMap/actions/runs/43757497773). The published ZIP was downloaded again and verified against its SHA-256 checksum, Info.plist version, universal Mach-O header, bundled Orbit HTML, and code-signature resources. Browser production builds and all 32 browser tests also pass. Live WhatCable discovery still depends on the helper and devices installed on the user's Mac.
 
 ## Edit the interface
 

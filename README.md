@@ -6,7 +6,7 @@ A Mac app with a native hardware backend and a locally bundled Workspace Orbit w
 
 The macOS app now bundles the selected Orbit interface in a `WKWebView` and connects it to the existing WhatCable scanner and device watcher. Build on your Mac with `./build.sh --zip --run`, or double-click **Build Port Map.command**. See [the macOS guide](MACOS.md) for prerequisites, demo mode, native validation, and signing details.
 
-[Download the universal Port Map 1.5 beta app](https://github.com/afilen86/PortMap/releases/download/macos-orbit-v1.5-build9/PortMap-1.5-build9.zip). The native app has passed a real macOS compile and WebKit smoke test. Extract the ZIP and move **Port Map.app** to Applications; developer tools are only needed to build from source. This beta is ad-hoc signed, not notarized. See [the Mac guide](MACOS.md) for first-launch instructions.
+[Download the universal Port Map 1.5 beta app](https://github.com/afilen86/PortMap/releases/download/macos-orbit-v1.5-build10/PortMap-1.5-build10.zip). The native app has passed a real macOS compile and WebKit smoke test. Extract the ZIP and move **Port Map.app** to Applications; developer tools are only needed to build from source. This beta is ad-hoc signed, not notarized. See [the Mac guide](MACOS.md) for first-launch instructions.
 
 ## Workspace Orbit preview release
 

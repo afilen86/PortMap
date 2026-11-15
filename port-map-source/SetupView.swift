@@ -900,8 +900,10 @@ private struct OverviewConnections: View {
                 for point in [edge.points.first, edge.points.last].compactMap({ $0 }) {
                     context.fill(Path(ellipseIn: CGRect(x: point.x - 3, y: point.y - 3, width: 6, height: 6)), with: .color(color.opacity(active ? 1 : 0.35)))
                 }
-                if active, let label = edge.label, let point = edge.labelPoint {
-                    let resolved = context.resolve(Text(label).font(.system(size: 12, weight: .semibold)).foregroundColor(.accentColor))
+                // Hand-entered cables keep their label even when not traced: it is the only place the cable type shows.
+                if active || child.manual, let label = edge.label, let point = edge.labelPoint {
+                    let resolved = context.resolve(Text(label).font(.system(size: active ? 12 : 11, weight: .semibold))
+                        .foregroundColor(active ? .accentColor : color))
                     let textSize = resolved.measure(in: CGSize(width: 240, height: 24))
                     let rect = CGRect(x: point.x - textSize.width / 2 - 7, y: point.y - 10, width: textSize.width + 14, height: 20)
                     context.fill(Path(roundedRect: rect, cornerRadius: 6), with: .color(Color(nsColor: .windowBackgroundColor)))

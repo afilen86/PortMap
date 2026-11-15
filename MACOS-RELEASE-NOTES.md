@@ -1,10 +1,11 @@
 # Port Map 1.5 — Workspace Orbit beta
 
-A native macOS window for the selected Workspace Orbit interface.
+A native macOS window for the selected Workspace Orbit interface. Build 10 keeps the live layout like the demo, with the Mac mini fixed at the center even when more than 19 devices are present.
 
 - Clay Studio in Light Mode; After Hours in Dark Mode; System appearance follows macOS.
 - Live WhatCable hardware discovery and automatic refresh when devices change.
-- Device images stay visible while tracing cable routes; larger setups receive an expanded layout.
+- The Mac mini stays in the center; familiar devices retain their demo positions, with extra devices arranged around the outside.
+- Device images stay visible while tracing cable routes; larger setups expand symmetrically around the Mac.
 - Manual audio connections and representative images remain labeled.
 - Explicit demo mode when the helper is unavailable; refresh returns to live scanning.
 - Original SwiftUI view available in the Appearance & View menu.

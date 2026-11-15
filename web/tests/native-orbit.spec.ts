@@ -207,3 +207,104 @@ test("invalid cyclic reports preserve the last valid live setup", async ({
   );
   await expect(page.locator(".device")).toHaveCount(19);
 });
+
+for (const count of [19, 20, 21, 28, 40]) {
+  test(`${count} live devices preserve the demo orbit with the Mac centered in both themes`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openNative(page);
+    const snapshot = await fixture(page);
+    while (snapshot.nodes.length < count)
+      snapshot.nodes.push({
+        id: `additional-${snapshot.nodes.length}`,
+        name: `Additional device ${snapshot.nodes.length}`,
+        image: "nvme",
+        kind: "storage",
+        wire: "USB",
+        speed: "10 Gb/s",
+        parent: "live-element",
+        generic: true,
+      });
+    // Live reports need not list their host first.
+    snapshot.nodes.reverse();
+    await state(page, { snapshot, refreshing: false });
+    for (const name of ["Light", "Dark"]) {
+      await page
+        .getByRole("group", { name: "Appearance" })
+        .getByRole("button", { name, exact: true })
+        .click();
+      await expect(page.locator(".device")).toHaveCount(count);
+      const shape = await page.evaluate(() => {
+        const stage = document
+          .querySelector(".stage-wrap")!
+          .getBoundingClientRect();
+        const host = document
+          .querySelector(".device[data-id=live-mac]")!
+          .getBoundingClientRect();
+        const rings = document
+          .querySelector(".orbit-rings")!
+          .getBoundingClientRect();
+        return {
+          dx: host.left + host.width / 2 - stage.left - stage.width / 2,
+          dy: host.top + host.height / 2 - stage.top - stage.height / 2,
+          ringDx: rings.left + rings.width / 2 - host.left - host.width / 2,
+          ringDy: rings.top + rings.height / 2 - host.top - host.height / 2,
+        };
+      });
+      expect(Math.abs(shape.dx)).toBeLessThan(1);
+      expect(Math.abs(shape.dy)).toBeLessThan(1);
+      expect(Math.abs(shape.ringDx)).toBeLessThan(1);
+      expect(Math.abs(shape.ringDy)).toBeLessThan(1);
+      const relativeToDemo = await page.evaluate(`(() => {
+        const host=DATA.layouts[design]['live-mac'];
+        return ['satechi','element','s4','display12','speakers'].map(slot=>({
+          actual:DATA.layouts[design]['live-'+slot][0]-host[0],
+          expected:savedScene.layouts[design][slot][0]-(1560-savedScene.sizes[design].mac.width)/2
+        }));
+      })()`);
+      for (const point of relativeToDemo as {
+        actual: number;
+        expected: number;
+      }[])
+        expect(point.actual).toBe(point.expected);
+      await expect(page.locator(".edge")).toHaveCount(count - 1);
+      expect(
+        await page.locator(".device").evaluateAll((cards) =>
+          cards.every((card) => {
+            const r = card.getBoundingClientRect();
+            return (
+              r.left >= 0 &&
+              r.right <= innerWidth &&
+              r.top >= 0 &&
+              r.bottom <= innerHeight
+            );
+          }),
+        ),
+      ).toBe(true);
+      const overlaps = await page.locator(".device").evaluateAll((cards) =>
+        cards.flatMap((card, i) => {
+          const a = card.getBoundingClientRect();
+          return cards
+            .slice(i + 1)
+            .filter((other) => {
+              const b = other.getBoundingClientRect();
+              return (
+                a.left < b.right &&
+                b.left < a.right &&
+                a.top < b.bottom &&
+                b.top < a.bottom
+              );
+            })
+            .map((other) => other.getAttribute("data-id"));
+        }),
+      );
+      expect(overlaps).toEqual([]);
+    }
+    if (count === 21)
+      await page.screenshot({
+        path: "test-results/live-centered-orbit.png",
+        fullPage: true,
+      });
+  });
+}

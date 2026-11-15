@@ -135,7 +135,23 @@ struct OrbitWebView: NSViewRepresentable {
                 window.portMap.receive(fixture);
                 if (document.querySelectorAll('.device').length !== 2) throw new Error('Native inventory export failed');
                 if (!document.querySelector('#devices').textContent.includes('LaCie')) throw new Error('Native device missing');
-                return 'Orbit WKWebView smoke test passed: appearances, demo images, and native inventory';
+                const crowded = JSON.parse(JSON.stringify(fixture));
+                const root = crowded.snapshot.nodes.find(node => !node.parent);
+                for (let i = 0; i < 19; i++) crowded.snapshot.nodes.push({
+                    id: 'extra-' + i, parent: root.id, name: 'Extra device ' + i,
+                    image: 'unknown', kind: 'device', wire: 'USB', speed: '', generic: true
+                });
+                window.portMap.receive(crowded);
+                if (document.querySelectorAll('.device').length !== 21) throw new Error('Overflow inventory missing');
+                for (const mode of ['light', 'dark']) {
+                    document.querySelector('[data-appearance="' + mode + '"]').click();
+                    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                    const card = [...document.querySelectorAll('.device')].find(card => card.dataset.id === root.id).getBoundingClientRect();
+                    const board = document.querySelector('.stage-wrap').getBoundingClientRect();
+                    if (Math.abs(card.left + card.width / 2 - board.left - board.width / 2) > 1 ||
+                        Math.abs(card.top + card.height / 2 - board.top - board.height / 2) > 1) throw new Error('Mac is not centered');
+                }
+                return 'Orbit WKWebView smoke test passed: themes, native inventory, and centered overflow layout';
                 """, arguments: ["fixture": fixture], in: nil, contentWorld: .page)
                     print(value)
                     exit(0)

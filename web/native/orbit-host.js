@@ -158,12 +158,13 @@ function routeLive(nodes, positions, metrics, width, height) {
       }
       return first;
     }
-    const initial = key(start.x, start.y);
+    const stateKey = (x, y, direction) => `${x},${y},${direction}`;
+    const initial = stateKey(start.x, start.y, -1);
     cost.set(initial, 0);
-    push({ x: start.x, y: start.y, g: 0, f: 0 });
+    push({ x: start.x, y: start.y, direction: -1, g: 0, f: 0 });
     while (heap.length) {
       const current = pop(),
-        ck = key(current.x, current.y);
+        ck = stateKey(current.x, current.y, current.direction);
       if (current.g !== cost.get(ck)) continue;
       if (current.x === goal.x && current.y === goal.y) {
         const path = [[current.x * 10, current.y * 10]];
@@ -173,18 +174,19 @@ function routeLive(nodes, positions, metrics, width, height) {
           path.push(
             p
               .split(",")
+              .slice(0, 2)
               .map(Number)
               .map((x) => x * 10),
           );
         }
         return path.reverse();
       }
-      for (const [dx, dy] of [
+      for (const [direction, [dx, dy]] of [
         [1, 0],
         [0, 1],
         [-1, 0],
         [0, -1],
-      ]) {
+      ].entries()) {
         const x = current.x + dx,
           y = current.y + dy,
           k = key(x, y);
@@ -196,11 +198,20 @@ function routeLive(nodes, positions, metrics, width, height) {
           occupied.has(k)
         )
           continue;
-        const g = current.g + 1 + (used.get(k) || 0) * 0.6;
-        if (g >= (cost.get(k) ?? Infinity)) continue;
-        cost.set(k, g);
-        previous.set(k, ck);
-        push({ x, y, g, f: g + Math.abs(x - goal.x) + Math.abs(y - goal.y) });
+        const turn =
+          current.direction !== -1 && current.direction !== direction ? 2 : 0;
+        const g = current.g + 1 + turn + (used.get(k) || 0) * 0.6;
+        const next = stateKey(x, y, direction);
+        if (g >= (cost.get(next) ?? Infinity)) continue;
+        cost.set(next, g);
+        previous.set(next, ck);
+        push({
+          x,
+          y,
+          direction,
+          g,
+          f: g + Math.abs(x - goal.x) + Math.abs(y - goal.y),
+        });
       }
     }
     return null;
@@ -255,58 +266,86 @@ function routeLive(nodes, positions, metrics, width, height) {
 let canvasWidth = 1560,
   canvasHeight = 820;
 function installLiveLayout(nodes) {
+  // Keep the demo's recognizable orbit for every live setup size. Additional
+  // devices extend equally to the left and right, leaving the Mac at the center.
+  const host = nodes.find((n) => !n.parent);
+  const rest = nodes
+    .filter((n) => n.parent)
+    .sort((a, b) => a.id.localeCompare(b.id));
+  const overflowCount = Math.max(0, nodes.length - savedScene.nodes.length);
+  const outerColumns = overflowCount
+    ? Math.ceil(Math.sqrt(overflowCount / 6))
+    : 0;
+  const outerRows = outerColumns
+    ? Math.ceil(overflowCount / (2 * outerColumns))
+    : 0;
+  const paddingX = outerColumns * 260;
+  canvasWidth = 1560 + 2 * paddingX;
+  canvasHeight = Math.max(
+    820,
+    2 * (Math.ceil((outerRows - 1) / 2) * 220 + 110),
+  );
+  const paddingY = (canvasHeight - 820) / 2;
   for (const theme of ["clay", "afterhours"]) {
     const slots = savedScene.layouts[theme],
       baseSizes = savedScene.sizes[theme];
     const positions = {},
       metrics = {},
-      assigned = new Set();
-    const host = nodes.find((n) => !n.parent);
-    positions[host.id] = [...slots.mac];
+      assigned = new Set(["mac"]);
     metrics[host.id] = { ...baseSizes.mac };
-    assigned.add("mac");
-    const rest = nodes.filter((n) => n.parent);
-    if (nodes.length <= 19) {
-      for (const n of rest) {
-        const candidate =
-          n.slot && n.slot !== "mac" && slots[n.slot] && !assigned.has(n.slot)
-            ? n.slot
-            : null;
-        if (candidate) {
-          assigned.add(candidate);
-          positions[n.id] = [...slots[candidate]];
-          metrics[n.id] = { ...baseSizes[candidate] };
-        }
-      }
-      for (const n of rest.filter((n) => !positions[n.id])) {
-        const slot =
-          Object.keys(slots).find(
-            (slot) =>
-              !assigned.has(slot) &&
-              !["mac", "satechi", "element"].includes(slot),
-          ) || Object.keys(slots).find((slot) => !assigned.has(slot));
-        assigned.add(slot);
-        positions[n.id] = [...slots[slot]];
-        metrics[n.id] = { ...baseSizes[slot] };
-      }
-      canvasWidth = 1560;
-      canvasHeight = 820;
-    } else {
-      const columns = Math.max(7, Math.ceil(Math.sqrt(rest.length * 1.7)));
-      canvasWidth = Math.max(1560, columns * 260);
-      canvasHeight = 300 + Math.ceil(rest.length / columns) * 240;
-      positions[host.id] = [
-        Math.floor((canvasWidth - metrics[host.id].width) / 20) * 10,
-        20,
-      ];
-      rest.forEach((n, i) => {
+    positions[host.id] = [
+      (canvasWidth - metrics[host.id].width) / 2,
+      (canvasHeight - metrics[host.id].height) / 2,
+    ];
+    // Assign recognized hardware first so snapshot order and unknown devices
+    // cannot displace a known hub, display, or controller from its demo position.
+    for (const n of rest) {
+      const candidate =
+        n.slot &&
+        n.slot !== "mac" &&
+        Object.hasOwn(slots, n.slot) &&
+        !assigned.has(n.slot)
+          ? n.slot
+          : null;
+      if (candidate) {
+        assigned.add(candidate);
         positions[n.id] = [
-          20 + (i % columns) * 260,
-          280 + Math.floor(i / columns) * 240,
+          slots[candidate][0] + paddingX,
+          slots[candidate][1] + paddingY,
         ];
-        metrics[n.id] = { ...baseSizes.expansion };
-      });
+        metrics[n.id] = { ...baseSizes[candidate] };
+      }
     }
+    const extra = [];
+    for (const n of rest.filter((n) => !positions[n.id])) {
+      const slot =
+        Object.keys(slots).find(
+          (slot) =>
+            !assigned.has(slot) &&
+            !["mac", "satechi", "element"].includes(slot),
+        ) || Object.keys(slots).find((slot) => !assigned.has(slot));
+      if (!slot) {
+        extra.push(n);
+        continue;
+      }
+      assigned.add(slot);
+      positions[n.id] = [slots[slot][0] + paddingX, slots[slot][1] + paddingY];
+      metrics[n.id] = { ...baseSizes[slot] };
+    }
+    extra.forEach((n, i) => {
+      const column = Math.floor(i / (2 * outerRows)),
+        side = i % 2,
+        row = Math.floor((i % (2 * outerRows)) / 2),
+        rowOffset = row ? Math.ceil(row / 2) * (row % 2 ? -1 : 1) : 0;
+      const centerX = side
+        ? 1560 + (column + 0.5) * 260
+        : -(column + 0.5) * 260;
+      metrics[n.id] = { ...baseSizes.expansion };
+      positions[n.id] = [
+        centerX + paddingX - metrics[n.id].width / 2,
+        canvasHeight / 2 + rowOffset * 220 - metrics[n.id].height / 2,
+      ];
+    });
     DATA.layouts[theme] = positions;
     DATA.sizes[theme] = metrics;
     DATA.routes[theme] = routeLive(
@@ -318,6 +357,7 @@ function installLiveLayout(nodes) {
     );
   }
 }
+
 function validSnapshot(input) {
   if (
     !input ||
@@ -377,6 +417,14 @@ fit = function () {
   stage.style.width = `${canvasWidth}px`;
   stage.style.height = `${canvasHeight}px`;
   wireLayer.setAttribute("viewBox", `0 0 ${canvasWidth} ${canvasHeight}`);
+  const rings = document.querySelector(".orbit-rings");
+  if (liveScene && rings) {
+    rings.style.left = `${(canvasWidth - rings.offsetWidth) / 2}px`;
+    rings.style.top = `${(canvasHeight - rings.offsetHeight) / 2}px`;
+  } else if (rings) {
+    rings.style.left = "";
+    rings.style.top = "";
+  }
   wrap.style.height = `${Math.ceil(canvasHeight * scale)}px`;
   stage.style.transform = `translateX(${(-canvasWidth * scale) / 2}px) scale(${scale})`;
 };

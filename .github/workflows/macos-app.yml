@@ -64,7 +64,7 @@ jobs:
           if gh release view "$tag" >/dev/null 2>&1; then
             echo "This app version is already published; keeping its existing assets."
           else
-            shasum -a 256 "build/PortMap-${version}-build${build}.zip" > "build/PortMap-${version}-build${build}.zip.sha256"
+            (cd build && shasum -a 256 "PortMap-${version}-build${build}.zip" > "PortMap-${version}-build${build}.zip.sha256")
             gh release create "$tag" "build/PortMap-${version}-build${build}.zip" "build/PortMap-${version}-build${build}.zip.sha256" \
               --target "$GITHUB_SHA" --prerelease --title "Port Map ${version} — Workspace Orbit beta" \
               --notes-file MACOS-RELEASE-NOTES.md

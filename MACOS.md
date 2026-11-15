@@ -25,7 +25,7 @@ Requires macOS 14+, Xcode Command Line Tools (Swift 6 toolchain), and Python 3. 
    ./build.sh --zip --run
    ```
 
-3. The script creates and opens **build/Port Map.app**, plus **build/PortMap-1.5-build9.zip**. You can move the app to Applications.
+3. The script creates and opens **build/Port Map.app**, plus **build/PortMap-1.5-build10.zip**. You can move the app to Applications.
 
 If the free Xcode tools aren't installed, run `xcode-select --install`, finish the system installer, and run the build again. If macOS doesn't preserve the scripts' executable permissions after downloading, run `bash build.sh --zip --run` from Terminal.
 

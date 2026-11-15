@@ -273,6 +273,31 @@ private struct CablePath: View {
     }
 }
 
+/// White tile behind a product photo (the photos have white backgrounds), dimmed in dark mode so it doesn't glare.
+private struct PhotoTile: ViewModifier {
+    let radius: CGFloat
+    @Environment(\.colorScheme) private var scheme
+
+    func body(content: Content) -> some View {
+        content
+            .background(Color.white, in: RoundedRectangle(cornerRadius: radius))
+            .overlay {
+                if scheme == .dark {
+                    RoundedRectangle(cornerRadius: radius).fill(Color.black.opacity(0.16)).allowsHitTesting(false)
+                }
+            }
+    }
+}
+
+/// A faint rim light in dark mode, so black device artwork doesn't vanish into a dark card.
+private struct ArtRim: ViewModifier {
+    @Environment(\.colorScheme) private var scheme
+
+    func body(content: Content) -> some View {
+        content.shadow(color: scheme == .dark ? Color.white.opacity(0.30) : .clear, radius: 3)
+    }
+}
+
 private struct DeviceArtwork: View {
     let art: DeviceArt?
     let icon: String
@@ -286,7 +311,7 @@ private struct DeviceArtwork: View {
                 .aspectRatio(contentMode: .fit)
                 .padding(3)
                 .frame(width: 97, height: 62)
-                .background(Color.white, in: RoundedRectangle(cornerRadius: 7))
+                .modifier(PhotoTile(radius: 7))
                 .accessibilityHidden(true)
         } else if let art, let image = art.image {
             Image(nsImage: image)
@@ -294,6 +319,7 @@ private struct DeviceArtwork: View {
                 .interpolation(.high)
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 97, height: 62)
+                .modifier(ArtRim())
                 .accessibilityHidden(true)
         } else {
             Image(systemName: icon)
@@ -972,12 +998,14 @@ private struct OverviewCard: View {
         if let name = device.photo ?? (device.art == .element ? "CalDigitHero" : nil), let photo = HubPhoto(resource: name).image {
             Image(nsImage: photo).resizable().interpolation(.high).aspectRatio(contentMode: .fit)
                 .padding(4)
-                .background(Color.white, in: RoundedRectangle(cornerRadius: 8))
+                .modifier(PhotoTile(radius: 8))
                 .padding(.horizontal, 12)
+                .padding(.top, 15) // clear of the badge in the card's corner
                 .accessibilityHidden(true)
         } else if let art = device.art, let image = art.image {
             Image(nsImage: image).resizable().interpolation(.high).aspectRatio(contentMode: .fit)
                 .padding(.horizontal, device.category == 1 && (art == .z1 || art == .x1) ? 45 : 5)
+                .modifier(ArtRim())
                 .accessibilityHidden(true)
         } else {
             Image(systemName: device.icon).resizable().scaledToFit().padding(12).foregroundStyle(.secondary)
@@ -1598,7 +1626,7 @@ private struct HubPhotoView: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: height)
                 .padding(8)
-                .background(Color.white, in: RoundedRectangle(cornerRadius: 12))
+                .modifier(PhotoTile(radius: 12))
                 .overlay { RoundedRectangle(cornerRadius: 12).strokeBorder(Color.primary.opacity(0.08)) }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Product photo" + (photo.markers.isEmpty ? "" : ": " + photo.markers.map(\.text).joined(separator: ", ")))

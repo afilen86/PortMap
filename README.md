@@ -6,7 +6,7 @@ A SwiftUI Mac app that maps what is plugged into this Mac: each port, the hubs a
 
 The selected interface is available as an offline browser package: **Clay Studio in Light Mode**, **After Hours in Dark Mode**, and a **System** appearance option. All device images remain visible while tracing routes.
 
-[Download preview releases](https://github.com/afilen86/PortMap/releases) · [Selected preview guide](web/public/orbit/README.md)
+[Download the offline preview ZIP](https://github.com/afilen86/PortMap/raw/refs/heads/main/packages/orbit-preview-v0.1.0/PortMap-Orbit-Preview-0.1.0.zip) · [Package and checksum](packages/orbit-preview-v0.1.0/README.md) · [Selected preview guide](web/public/orbit/README.md)
 
 Extract the release ZIP, then double-click **Port Map Orbit.html** on your Mac. No server or developer tools are needed. This preview uses saved data; it isn't a native Mac installer or a live hardware scanner.
 
@@ -16,7 +16,7 @@ To build the offline ZIP and SHA-256 checksum from source (Python 3.10+):
 python3 web/design-tools/package-orbit.py
 ```
 
-Packages are written to `web/release/`. Tags named `orbit-preview-v<web/package.json version>` run the GitHub release workflow, which builds, tests, and publishes a preview prerelease. Release notes live in `web/releases/`.
+Build output is written to `web/release/`; the verified 0.1.0 download is also retained in the versioned `packages/` folder. Tags named `orbit-preview-v<web/package.json version>` run the GitHub release workflow, which builds, tests, and publishes a preview prerelease. Release notes live in `web/releases/`.
 
 ## Browser UI development
 

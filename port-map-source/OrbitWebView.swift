@@ -89,12 +89,14 @@ struct OrbitWebView: NSViewRepresentable {
                   data != lastEvent else { return }
             lastEvent = data
             // Structured arguments keep device names and helper errors out of JavaScript source.
-            webView.callAsyncJavaScript("window.portMap.receive(event)", arguments: ["event": event],
-                                        in: nil, contentWorld: .page) { [weak self] result in
-                if case .failure(let error) = result {
-                    NSLog("Orbit bridge error: %@", error.localizedDescription)
-                } else {
+            Task { @MainActor [weak self, weak webView] in
+                guard let webView else { return }
+                do {
+                    _ = try await webView.callAsyncJavaScript("window.portMap.receive(event)",
+                        arguments: ["event": event], in: nil, contentWorld: .page)
                     self?.runSmokeTestIfNeeded()
+                } catch {
+                    NSLog("Orbit bridge error: %@", error.localizedDescription)
                 }
             }
         }
@@ -120,7 +122,10 @@ struct OrbitWebView: NSViewRepresentable {
                             detail: "LaCie", speed: "480 Mbps", icon: "externaldrive")])
             let fixture: [String: Any] = ["type": "state", "schemaVersion": 1, "refreshing": false,
                                          "snapshot": orbitSnapshot(scan: PortScan(ports: [port], version: "smoke-test", isMacMini: true))]
-            webView?.callAsyncJavaScript("""
+            Task { @MainActor [weak webView] in
+                guard let webView else { return }
+                do {
+                    let value = try await webView.callAsyncJavaScript("""
                 if (document.querySelectorAll('.device').length !== 19) throw new Error('Missing demo images');
                 document.querySelector('[data-appearance="dark"]').click();
                 if (document.body.dataset.variant !== 'afterhours') throw new Error('Dark appearance failed');
@@ -131,16 +136,14 @@ struct OrbitWebView: NSViewRepresentable {
                 if (document.querySelectorAll('.device').length !== 2) throw new Error('Native inventory export failed');
                 if (!document.querySelector('#devices').textContent.includes('LaCie')) throw new Error('Native device missing');
                 return 'Orbit WKWebView smoke test passed: appearances, demo images, and native inventory';
-                """, arguments: ["fixture": fixture], in: nil, contentWorld: .page) { result in
-                    switch result {
-                    case .success(let value):
-                        print(value)
-                        exit(0)
-                    case .failure(let error):
-                        NSLog("Orbit smoke test failed: %@", error.localizedDescription)
-                        exit(1)
-                    }
+                """, arguments: ["fixture": fixture], in: nil, contentWorld: .page)
+                    print(value)
+                    exit(0)
+                } catch {
+                    NSLog("Orbit smoke test failed: %@", error.localizedDescription)
+                    exit(1)
                 }
+            }
         }
     }
 }

@@ -409,11 +409,13 @@ private struct SetupDevice: Identifiable {
     let detail: String?
     let art: DeviceArt?
     let icon: String
-    let wire: SetupWire?
+    var wire: SetupWire?
     var children: [Self]
+    /// Where this device plugs into a recognized hub, e.g. "CalDigit USB-A".
+    var hubSocket: String? = nil
 
     static func nodes(for port: Port) -> [Self] {
-        let nodes = port.connections.map { build($0, port: port) }
+        let nodes = port.connections.map { build($0, port: port).labelingElementPorts() }
         guard let stand = nodes.first(where: { $0.art == .satechi }),
               let companion = nodes.first(where: { $0.art == nil && $0.title == "Satechi USB 2 branch" }) else {
             return nodes
@@ -487,6 +489,12 @@ struct OverviewView: View {
     @State private var selectedID: String?
     @State private var showInterfaces = false
     @State private var showPaths = true
+    @State private var hubPanelHidden = false
+
+    private func select(_ id: String) {
+        selectedID = id
+        hubPanelHidden = false
+    }
 
     var body: some View {
         let items = OverviewInventory(scan: scan)
@@ -495,6 +503,8 @@ struct OverviewView: View {
             ?? items.devices.first { $0.id != "host" }
             ?? items.devices.first!
         let trace = OverviewTrace(devices: items.devices, targetID: target.id)
+        let element = ElementHubContext(scan: scan)
+        let showHubPanel = !hubPanelHidden && element.map { trace.ids.contains($0.overviewID) } == true
         VStack(spacing: 0) {
             HStack {
                 VStack(alignment: .leading, spacing: 3) {
@@ -519,32 +529,43 @@ struct OverviewView: View {
             .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal, 24).padding(.bottom, 5)
             .accessibilityIdentifier("connection-breadcrumb")
-            GeometryReader { geometry in
-                let layout = OverviewLayout(items: items.devices)
-                let scale = min(geometry.size.width / layout.size.width, geometry.size.height / layout.size.height)
-                ZStack(alignment: .topLeading) {
-                    OverviewTiers(size: layout.size, tiers: layout.tiers)
-                    OverviewConnections(devices: items.devices, frames: layout.frames,
-                                        selectedID: target.id, showAll: showPaths)
-                    ForEach(items.devices) { device in
-                        if let frame = layout.frames[device.id], !(layout.hasStack && (device.id == "host" || device.art == .satechi)) {
-                            OverviewCard(device: device, selected: trace.ids.contains(device.id)) { selectedID = device.id }
+            HStack(spacing: 0) {
+                GeometryReader { geometry in
+                    let layout = OverviewLayout(items: items.devices)
+                    let scale = min(geometry.size.width / layout.size.width, geometry.size.height / layout.size.height)
+                    ZStack(alignment: .topLeading) {
+                        OverviewTiers(size: layout.size, tiers: layout.tiers)
+                        OverviewConnections(devices: items.devices, frames: layout.frames,
+                                            selectedID: target.id, showAll: showPaths)
+                        ForEach(items.devices) { device in
+                            if let frame = layout.frames[device.id], !(layout.hasStack && (device.id == "host" || device.art == .satechi)) {
+                                OverviewCard(device: device, selected: trace.ids.contains(device.id)) { select(device.id) }
+                                    .frame(width: frame.width, height: frame.height)
+                                    .position(x: frame.midX, y: frame.midY)
+                            }
+                        }
+                        if layout.hasStack, let stand = items.devices.first(where: { $0.art == .satechi }),
+                           let host = items.devices.first(where: { $0.id == "host" }), let frame = layout.stackFrame {
+                            OverviewStack(host: host, stand: stand, selectedIDs: trace.ids) { select($0) }
                                 .frame(width: frame.width, height: frame.height)
                                 .position(x: frame.midX, y: frame.midY)
                         }
                     }
-                    if layout.hasStack, let stand = items.devices.first(where: { $0.art == .satechi }),
-                       let host = items.devices.first(where: { $0.id == "host" }), let frame = layout.stackFrame {
-                        OverviewStack(host: host, stand: stand, selectedIDs: trace.ids) { selectedID = $0 }
-                            .frame(width: frame.width, height: frame.height)
-                            .position(x: frame.midX, y: frame.midY)
-                    }
+                    .frame(width: layout.size.width, height: layout.size.height)
+                    .scaleEffect(scale, anchor: .center)
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
                 }
-                .frame(width: layout.size.width, height: layout.size.height)
-                .scaleEffect(scale, anchor: .center)
-                .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                .clipped()
+                if showHubPanel, let element {
+                    Divider()
+                    ElementHubPanel(context: element, tracedIDs: trace.ids,
+                                    selectableIDs: Set(items.devices.map(\.id)),
+                                    select: select, close: { hubPanelHidden = true })
+                        .frame(width: 330)
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
             }
-            .clipped()
+            .animation(.easeInOut(duration: 0.2), value: showHubPanel)
             HStack(spacing: 12) {
                 Label("Highlighted route", systemImage: "line.diagonal").foregroundStyle(Color.accentColor)
                 Text("– –  Through interfaces / unverified cable").foregroundStyle(.secondary)
@@ -587,11 +608,13 @@ private struct OverviewDevice: Identifiable {
     let indirect: Bool
     let category: Int // display, controller, host/stand, other
     var isHub = false
+    var hubSocket: String? = nil
     var routeTitle: String {
         if art == .nvme, detail?.contains("2TB") == true { return "ASMedia NVMe · 2TB" }
         return title
     }
     var subtitle: String {
+        if let hubSocket { return hubSocket }
         guard let port else { return "Host computer" }
         let location = port.group == "Display" ? "HDMI" : port.group == "Rear Thunderbolt" ? "Rear \(port.position.lowercased())" : "\(port.group) \(port.position)"
         return location
@@ -661,7 +684,8 @@ private struct OverviewInventory {
             devices.append(OverviewDevice(id: id, title: node.title, art: node.art ?? (identifiedHub ? .hub : nil),
                                           icon: isStorageEndpoint ? "externaldrive" : node.icon, port: port, path: fullPath,
                                           detail: node.detail, wire: node.wire, parentID: parent,
-                                          indirect: indirect || (node.wire?.dashed ?? false), category: category, isHub: identifiedHub))
+                                          indirect: indirect || (node.wire?.dashed ?? false), category: category, isHub: identifiedHub,
+                                          hubSocket: node.hubSocket))
             nextParent = id
         } else {
             interfaces.append(OverviewInterface(parentID: parent, id: id, title: node.title, path: fullPath, detail: node.detail))
@@ -1029,5 +1053,338 @@ private struct OverviewStack: View {
             RoundedRectangle(cornerRadius: 18).strokeBorder(selectedIDs.contains(host.id) || selectedIDs.contains(stand.id) ? Color.accentColor : Color.primary.opacity(0.12), lineWidth: 2)
                 .allowsHitTesting(false)
         }
+    }
+}
+
+// MARK: - CalDigit Element Hub ports
+
+// macOS reports the hub's internal topology, not which socket a cable is in. The Element
+// Hub's integrated controller drives its USB-C (Thunderbolt 4) ports directly: Thunderbolt /
+// USB4 devices, DisplayPort outputs, and USB devices sitting right on that controller use
+// USB-C. The controller also feeds a separate CalDigit USB hub chip, and devices behind that
+// chip use the USB-A ports.
+private enum ElementSocket {
+    case usbC, usbA
+    var label: String { self == .usbC ? "USB-C" : "USB-A" }
+}
+
+private struct ElementSlot: Identifiable {
+    let device: SetupDevice
+    let socket: ElementSocket
+    let kind: String
+    /// A USB interface that rides along another device's USB-C cable, such as a display's touch input.
+    var sharesPort = false
+    var id: String { device.id }
+    /// Physical devices plugged into this one, e.g. the X1 MK3 behind the S4 MK3.
+    var downstream: [SetupDevice] { Self.physical(in: device.children) }
+
+    private static func physical(in nodes: [SetupDevice]) -> [SetupDevice] {
+        nodes.flatMap { $0.art != nil ? [$0] + physical(in: $0.children) : physical(in: $0.children) }
+    }
+}
+
+private struct ElementPorts {
+    static let usbCDownstreamCount = 3
+    static let usbACount = 4
+    private(set) var usbC: [ElementSlot] = []
+    private(set) var usbA: [ElementSlot] = []
+
+    var usbCInUse: Int { usbC.filter { !$0.sharesPort }.count }
+
+    init(hub: SetupDevice) {
+        for child in hub.children {
+            if child.id.hasPrefix("switch-") {
+                usbC.append(ElementSlot(device: child, socket: .usbC, kind: Self.strip(child.wire?.label) ?? "Thunderbolt / USB4"))
+            } else if child.id.hasPrefix("display-") {
+                usbC.append(ElementSlot(device: child, socket: .usbC, kind: "DisplayPort video"))
+            } else if Self.isHubChip(child) {
+                for device in child.children where !Self.isManagement(device) {
+                    if Self.isHubChip(device) && device.detail?.localizedCaseInsensitiveContains("caldigit") == true {
+                        for plugged in device.children where !Self.isManagement(plugged) {
+                            usbA.append(ElementSlot(device: plugged, socket: .usbA, kind: Self.usbKind(plugged)))
+                        }
+                    } else {
+                        let sharesPort = device.art == nil && device.title.localizedCaseInsensitiveContains("interface")
+                        usbC.append(ElementSlot(device: device, socket: .usbC, kind: Self.usbKind(device), sharesPort: sharesPort))
+                    }
+                }
+            } else if !Self.isManagement(child) {
+                usbC.append(ElementSlot(device: child, socket: .usbC, kind: Self.usbKind(child)))
+            }
+        }
+    }
+
+    private static func isHubChip(_ node: SetupDevice) -> Bool {
+        node.art == nil && node.title.localizedCaseInsensitiveContains("hub")
+    }
+
+    private static func isManagement(_ node: SetupDevice) -> Bool {
+        node.title == "Element Hub management interface"
+    }
+
+    private static func usbKind(_ node: SetupDevice) -> String {
+        guard let label = strip(node.wire?.label), !label.isEmpty else { return "USB" }
+        return "USB · \(label)"
+    }
+
+    /// Drops a leading "USB" / "USB path" / socket prefix so labels can be rebuilt.
+    static func strip(_ label: String?) -> String? {
+        guard let label else { return nil }
+        var parts = label.components(separatedBy: " · ")
+        if let first = parts.first, ["USB", "USB path", "USB-A", "USB-C"].contains(first) { parts.removeFirst() }
+        return parts.joined(separator: " · ")
+    }
+}
+
+private extension SetupWire {
+    func on(_ socket: ElementSocket) -> Self {
+        let rest = ElementPorts.strip(label).flatMap { $0.isEmpty ? nil : $0 }
+        return Self(label: [socket.label, rest].compactMap { $0 }.joined(separator: " · "),
+                    explanation: explanation + " It is on one of the CalDigit's \(socket.label) ports; the exact socket is not reported.",
+                    color: color, dashed: dashed, connector: connector)
+    }
+}
+
+private extension SetupDevice {
+    func labelingElementPorts() -> Self {
+        guard art == .element else { return self }
+        let ports = ElementPorts(hub: self)
+        var sockets: [String: ElementSocket] = [:]
+        var labels: [String: String] = [:]
+        for slot in ports.usbC + ports.usbA {
+            sockets[slot.id] = slot.socket
+            labels[slot.id] = "CalDigit \(slot.socket.label)"
+            for device in slot.downstream { labels[device.id] = "Via \(slot.device.title)" }
+        }
+        return relabeled(sockets: sockets, labels: labels)
+    }
+
+    private func relabeled(sockets: [String: ElementSocket], labels: [String: String]) -> Self {
+        var copy = self
+        if let socket = sockets[id] { copy.wire = wire?.on(socket) }
+        if let label = labels[id] { copy.hubSocket = label }
+        copy.children = children.map { $0.relabeled(sockets: sockets, labels: labels) }
+        return copy
+    }
+}
+
+private struct ElementHubContext {
+    let hub: SetupDevice
+    let port: Port
+    var overviewID: String { port.id + "/" + hub.id }
+
+    init?(scan: PortScan) {
+        for port in scan.ports where port.connected {
+            if let hub = SetupDevice.nodes(for: port).first(where: { $0.art == .element }) {
+                self.hub = hub
+                self.port = port
+                return
+            }
+        }
+        return nil
+    }
+}
+
+private struct ElementHubPanel: View {
+    let context: ElementHubContext
+    let tracedIDs: Set<String>
+    let selectableIDs: Set<String>
+    let select: (String) -> Void
+    let close: () -> Void
+
+    private func overviewID(_ device: SetupDevice) -> String { context.port.id + "/" + device.id }
+
+    /// The atlas cell has wide transparent margins; crop to the artwork so the hub fills the panel.
+    private static let hubImage: NSImage? = DeviceArt.element.image.map { image in
+        guard let cg = image.cgImage(forProposedRect: nil, context: nil, hints: nil),
+              let context = CGContext(data: nil, width: cg.width, height: cg.height, bitsPerComponent: 8,
+                                      bytesPerRow: cg.width * 4, space: CGColorSpaceCreateDeviceRGB(),
+                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue),
+              let raw = context.data else { return image }
+        context.draw(cg, in: CGRect(x: 0, y: 0, width: cg.width, height: cg.height))
+        let bytes = raw.assumingMemoryBound(to: UInt8.self)
+        // Bitmap rows run top to bottom in memory, matching CGImage cropping coordinates.
+        var minX = cg.width, minY = cg.height, maxX = -1, maxY = -1
+        for y in 0..<cg.height {
+            for x in 0..<cg.width where bytes[y * cg.width * 4 + x * 4 + 3] > 40 {
+                minX = min(minX, x); maxX = max(maxX, x); minY = min(minY, y); maxY = max(maxY, y)
+            }
+        }
+        guard maxX > minX, maxY > minY,
+              let crop = cg.cropping(to: CGRect(x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1))
+        else { return image }
+        return NSImage(cgImage: crop, size: NSSize(width: crop.width, height: crop.height))
+    }
+
+    private var hostLink: String {
+        let label = SetupWire.host(context.port).label
+        return label.components(separatedBy: " · ").last ?? context.port.link
+    }
+
+    private var hostLocation: String {
+        switch context.port.group {
+        case "Rear Thunderbolt": "rear \(context.port.position.lowercased())"
+        default: "\(context.port.group) \(context.port.position)"
+        }
+    }
+
+    var body: some View {
+        let ports = ElementPorts(hub: context.hub)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("CalDigit Element Hub").font(.title3.weight(.semibold))
+                            .accessibilityAddTraits(.isHeader)
+                        Text("Ports in use").font(.callout).foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Button(action: close) {
+                        Image(systemName: "xmark.circle.fill").font(.system(size: 17))
+                    }
+                    .buttonStyle(.plain).foregroundStyle(.secondary)
+                    .help("Hide CalDigit ports")
+                    .accessibilityLabel("Hide CalDigit ports")
+                }
+                if let image = Self.hubImage {
+                    Image(nsImage: image).resizable().interpolation(.high).aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: .infinity).frame(height: 130)
+                        .padding(.vertical, 6)
+                        .accessibilityHidden(true)
+                }
+
+                section(title: "USB-C · Thunderbolt 4",
+                        usage: "\(ports.usbCInUse) of \(ElementPorts.usbCDownstreamCount) downstream in use") {
+                    ElementPortRow(socket: .usbC, title: "Host port → Mac",
+                                   detail: "Mac \(hostLocation) · \(hostLink)",
+                                   art: nil, icon: "desktopcomputer", used: true, highlighted: tracedIDs.contains(context.overviewID))
+                    ForEach(ports.usbC) { slot in slotRow(slot) }
+                    ForEach(0..<max(0, ElementPorts.usbCDownstreamCount - ports.usbCInUse), id: \.self) { _ in
+                        ElementPortRow.empty(.usbC)
+                    }
+                }
+
+                section(title: "USB-A · 10 Gb/s",
+                        usage: "\(ports.usbA.count) of \(ElementPorts.usbACount) in use") {
+                    ForEach(ports.usbA) { slot in slotRow(slot) }
+                    ForEach(0..<max(0, ElementPorts.usbACount - ports.usbA.count), id: \.self) { _ in
+                        ElementPortRow.empty(.usbA)
+                    }
+                }
+
+                Text("macOS reports which kind of port each device is on, read from the hub's internal USB controllers, but not the exact socket. Socket order here is schematic.")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(18)
+        }
+        .background(Color(nsColor: .controlBackgroundColor).opacity(0.55))
+        .accessibilityIdentifier("caldigit-ports")
+    }
+
+    private func section<Rows: View>(title: String, usage: String, @ViewBuilder rows: () -> Rows) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(title).font(.subheadline.weight(.semibold))
+                Spacer()
+                Text(usage).font(.caption.weight(.medium)).foregroundStyle(.secondary)
+            }
+            VStack(spacing: 4) { rows() }
+        }
+    }
+
+    @ViewBuilder private func slotRow(_ slot: ElementSlot) -> some View {
+        let ids = [slot.device] + slot.downstream
+        let highlighted = ids.contains { tracedIDs.contains(overviewID($0)) }
+        let note = slot.sharesPort
+            ? "Shares a display's USB-C cable"
+            : slot.downstream.isEmpty ? nil : "→ " + slot.downstream.map(\.title).joined(separator: ", ")
+        let row = ElementPortRow(socket: slot.socket, title: slot.device.title, detail: slot.kind, note: note,
+                                 art: slot.device.art, icon: slot.device.icon, used: !slot.sharesPort,
+                                 highlighted: highlighted, secondary: slot.sharesPort)
+        if selectableIDs.contains(overviewID(slot.device)) {
+            Button { select(overviewID(slot.device)) } label: { row }
+                .buttonStyle(.plain)
+                .help("Trace \(slot.device.title)")
+        } else {
+            row
+        }
+    }
+}
+
+private struct ElementPortRow: View {
+    let socket: ElementSocket
+    let title: String
+    let detail: String
+    var note: String? = nil
+    let art: DeviceArt?
+    let icon: String
+    let used: Bool
+    let highlighted: Bool
+    var secondary = false
+
+    static func empty(_ socket: ElementSocket) -> Self {
+        Self(socket: socket, title: "Empty", detail: "Available", art: nil, icon: "", used: false, highlighted: false)
+    }
+
+    var body: some View {
+        HStack(spacing: 10) {
+            VStack(spacing: 3) {
+                SocketGlyph(socket: socket, used: used)
+                Text(socket.label).font(.system(size: 9, weight: .bold)).foregroundStyle(used ? Color.accentColor : .secondary)
+            }
+            .frame(width: 42)
+            Group {
+                if let art, let image = art.image {
+                    Image(nsImage: image).resizable().interpolation(.high).aspectRatio(contentMode: .fit)
+                } else if !icon.isEmpty {
+                    Image(systemName: icon).font(.system(size: 15)).foregroundStyle(.secondary)
+                }
+            }
+            .frame(width: 46, height: 30)
+            .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.callout.weight(used ? .semibold : .regular))
+                    .foregroundStyle(used || secondary ? .primary : .secondary)
+                    .lineLimit(2).fixedSize(horizontal: false, vertical: true)
+                Text(detail).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                if let note {
+                    Text(note).font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 8).padding(.vertical, 6)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(highlighted ? Color.accentColor.opacity(0.13) : Color.primary.opacity(used ? 0.045 : 0.018),
+                    in: RoundedRectangle(cornerRadius: 9))
+        .overlay {
+            RoundedRectangle(cornerRadius: 9)
+                .strokeBorder(highlighted ? Color.accentColor : Color.primary.opacity(0.07), lineWidth: highlighted ? 1.5 : 1)
+        }
+        .contentShape(RoundedRectangle(cornerRadius: 9))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(socket.label) port, \(title), \(detail)\(note.map { ", \($0)" } ?? "")")
+    }
+}
+
+/// Front view of the socket: USB-C is a rounded slot, USB-A a rectangle with its tongue.
+private struct SocketGlyph: View {
+    let socket: ElementSocket
+    let used: Bool
+
+    var body: some View {
+        let color = used ? Color.accentColor : Color.secondary.opacity(0.6)
+        ZStack {
+            if socket == .usbC {
+                Capsule().strokeBorder(color, lineWidth: 1.6).frame(width: 28, height: 11)
+                Capsule().fill(color).frame(width: 16, height: 3)
+            } else {
+                RoundedRectangle(cornerRadius: 1.5).strokeBorder(color, lineWidth: 1.6).frame(width: 30, height: 13)
+                Rectangle().fill(color).frame(width: 22, height: 4).offset(y: -2)
+            }
+        }
+        .frame(width: 32, height: 15)
+        .accessibilityHidden(true)
     }
 }

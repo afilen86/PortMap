@@ -550,23 +550,29 @@ struct OverviewView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 3) {
                     Text("Your connected setup").font(.title2.weight(.semibold))
-                    Text("Select a device to trace its route; use its info button for details")
+                        .accessibilityAddTraits(.isHeader)
+                    Text("Select a device to highlight its cable path. Choose ⓘ for device details.")
                         .font(.callout).foregroundStyle(.secondary)
                 }
                 Spacer()
                 Toggle("All paths", isOn: $showPaths).toggleStyle(.switch).controlSize(.small)
+                    .help("Show every connection, or focus on the selected device’s route")
                 Button("Interfaces (\(items.interfaces.count))") { showInterfaces.toggle() }
                     .popover(isPresented: $showInterfaces) { OverviewInterfaces(interfaces: items.interfaces) }
             }
             .padding(.horizontal, 24).padding(.top, 14).padding(.bottom, 10)
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
+                Label("SELECTED ROUTE", systemImage: "point.topleft.down.to.point.bottomright.curvepath")
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(0.7)
+                    .foregroundStyle(.secondary)
                 Text(trace.devices.map(\.routeTitle).joined(separator: "  →  "))
                     .font(.system(size: 14, weight: .semibold)).lineLimit(2).textSelection(.enabled)
                 Text(trace.devices.dropFirst().compactMap { $0.wire?.label }.joined(separator: "    •    "))
                     .font(.caption).foregroundStyle(.secondary).lineLimit(2)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 14).padding(.vertical, 9)
+            .padding(.horizontal, 16).padding(.vertical, 12)
             .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal, 24).padding(.bottom, 5)
             .accessibilityIdentifier("connection-breadcrumb")

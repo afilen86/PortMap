@@ -112,14 +112,21 @@ struct MapView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             } else {
-                VStack(spacing: 14) {
+                VStack(spacing: 16) {
                     if let error = model.error {
-                        Image(systemName: "exclamationmark.triangle").font(.system(size: 29))
-                        Text(error).multilineTextAlignment(.center)
-                        Button("Try Again") { Task { await model.refresh() } }
+                        ContentUnavailableView {
+                            Label("Couldn’t read connections", systemImage: "exclamationmark.triangle")
+                        } description: {
+                            Text(error).textSelection(.enabled)
+                        } actions: {
+                            Button("Try Again") { Task { await model.refresh() } }
+                                .disabled(model.refreshing)
+                        }
                     } else {
                         ProgressView()
-                        Text("Reading connected devices…").foregroundStyle(.secondary)
+                        Text("Reading connected devices…").font(.headline)
+                        Text("Your ports and cable paths will appear here.")
+                            .font(.callout).foregroundStyle(.secondary)
                     }
                 }
                 .padding(24)
@@ -194,8 +201,9 @@ struct MapView: View {
                 }
                 ForEach(groups, id: \.self) { group in
                     VStack(alignment: .leading, spacing: 5) {
-                        Text(group)
-                            .font(.subheadline.weight(.semibold))
+                        Text(group.uppercased())
+                            .font(.caption.weight(.semibold))
+                            .tracking(0.6)
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 8)
                         if group == "Rear Thunderbolt" {
@@ -218,12 +226,16 @@ struct MapView: View {
                                     VStack(alignment: .leading, spacing: 3) {
                                         Text(port.shortName)
                                             .font(.subheadline.weight(.semibold))
-                                        Text(port.label)
+                                        Text(port.connected ? port.label : "Available")
                                             .font(.callout)
                                             .foregroundStyle(.secondary)
                                             .lineLimit(1)
                                     }
                                     Spacer(minLength: 0)
+                                    Circle()
+                                        .fill(port.connected ? Color.green : Color.secondary.opacity(0.3))
+                                        .frame(width: 6, height: 6)
+                                        .accessibilityHidden(true)
                                     if selected {
                                         Image(systemName: "chevron.right")
                                             .font(.caption.weight(.semibold))
@@ -231,7 +243,7 @@ struct MapView: View {
                                     }
                                 }
                                 .padding(.horizontal, 8)
-                                .padding(.vertical, 6)
+                                .padding(.vertical, 10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(selected ? Color.accentColor.opacity(0.14) : .clear,
                                             in: RoundedRectangle(cornerRadius: 8))
@@ -239,6 +251,7 @@ struct MapView: View {
                             }
                             .buttonStyle(.plain)
                             .accessibilityAddTraits(selected ? .isSelected : [])
+                            .accessibilityValue(port.connected ? "Connected" : "Available")
                             .help(port.id)
                         }
                     }
@@ -246,7 +259,7 @@ struct MapView: View {
             }
             .padding(15)
         }
-        .frame(width: 225)
+        .frame(width: 245)
         .background(Color(nsColor: .underPageBackgroundColor).opacity(0.42))
     }
 
@@ -264,7 +277,15 @@ struct MapView: View {
                         if port.connected { linkLabel(port) }
                     }
                 }
-                Text(port.id).font(.system(.caption, design: .monospaced)).foregroundStyle(.secondary)
+                HStack(spacing: 8) {
+                    Label(port.connected ? "Connected" : "Available",
+                          systemImage: port.connected ? "checkmark.circle.fill" : "circle.dashed")
+                        .foregroundStyle(port.connected ? Color.green : Color.secondary)
+                    Text(port.id).font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                }
+                .font(.caption)
                 if let cable = port.cable, port.connected {
                     Label("Cable · \(cable)", systemImage: "cable.connector")
                         .font(.callout)
@@ -281,17 +302,21 @@ struct MapView: View {
             .padding(.vertical, 19)
             Divider().padding(.horizontal, 24)
             if port.connections.isEmpty {
-                VStack(alignment: .leading, spacing: 7) {
-                    Text(port.connected ? "Connected" : "No device connected").font(.headline)
+                ContentUnavailableView {
+                    Label(port.connected ? "No device details" : "Ready to connect",
+                          systemImage: "cable.connector")
+                } description: {
+                    Text(port.connected
+                         ? "This port is connected, but no device details were reported."
+                         : "Connect a device to see its details and cable path here.")
                     if !port.connected && port.group == "Front USB-C" {
-                        Text("USB 3 · up to 10 Gb/s").foregroundStyle(.secondary)
+                        Text("USB 3 · up to 10 Gb/s")
                     }
                 }
-                .padding(24)
-                Spacer()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 3) {
+                    VStack(alignment: .leading, spacing: 8) {
                         ForEach(port.connections) { node in DeviceRow(node: node) }
                     }
                     .padding(.horizontal, 24)
@@ -322,7 +347,10 @@ struct MapView: View {
             if let scan = model.scan {
                 Text(scan.version.isEmpty ? "WhatCable + macOS" : "WhatCable \(scan.version) + macOS")
                 Spacer()
-                Text("Updates when devices change · scanned \(scan.capturedAt.formatted(date: .omitted, time: .standard))")
+                Label(model.refreshing ? "Scanning…" : "Updates automatically",
+                      systemImage: model.refreshing ? "arrow.clockwise" : "arrow.triangle.2.circlepath")
+                    .help("Rescans when a device is connected or removed")
+                Text("Last scan \(scan.capturedAt.formatted(date: .omitted, time: .shortened))")
                     .monospacedDigit()
             } else {
                 Text("WhatCable + macOS")
@@ -383,6 +411,6 @@ struct DeviceRow: View {
                     .textSelection(.enabled)
             }
         }
-        .padding(.vertical, 5)
+        .padding(.vertical, 8)
     }
 }

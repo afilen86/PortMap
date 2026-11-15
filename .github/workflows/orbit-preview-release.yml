@@ -1,0 +1,73 @@
+name: Publish Orbit preview
+
+on:
+  push:
+    tags:
+      - "orbit-preview-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Verify release version
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          version = json.load(open('web/package.json'))['version']
+          assert os.environ['RELEASE_TAG'] == f'orbit-preview-v{version}', 'Tag must match web/package.json'
+          PY
+      - name: Install dependencies
+        run: npm ci
+        working-directory: web
+      - name: Install browser
+        working-directory: web
+        run: |
+          npx playwright install --with-deps chromium
+          node --input-type=module -e "import { chromium } from '@playwright/test'; console.log('CHROMIUM_PATH=' + chromium.executablePath())" >> "$GITHUB_ENV"
+      - name: Regenerate previews
+        run: |
+          python3 web/design-tools/build-mockups.py
+          python3 web/design-tools/build-orbit-variants.py
+          python3 web/design-tools/build-orbit-appearance.py
+      - name: Check formatting and production build
+        working-directory: web
+        run: |
+          npm run format:check
+          npm run build
+      - name: Run browser checks
+        run: npm test
+        working-directory: web
+      - name: Package offline preview
+        run: python3 web/design-tools/package-orbit.py
+      - name: Verify packaged document
+        run: node design-tools/verify-orbit-package.mjs
+        working-directory: web
+      - name: Publish preview release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" web/release/*.zip web/release/*.sha256 \
+            --verify-tag --prerelease \
+            --title "Workspace Orbit Preview ${RELEASE_TAG#orbit-preview-v}" \
+            --notes-file "web/releases/$RELEASE_TAG.md"

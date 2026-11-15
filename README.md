@@ -2,6 +2,36 @@
 
 A SwiftUI Mac app that maps what is plugged into this Mac: each port, the hubs and devices behind it, and the cable path between them. Port data comes from the WhatCable helper, which must be installed (the app in /Applications, or `whatcable` from Homebrew).
 
+## Workspace Orbit preview release
+
+The selected interface is available as an offline browser package: **Clay Studio in Light Mode**, **After Hours in Dark Mode**, and a **System** appearance option. All device images remain visible while tracing routes.
+
+[Download preview releases](https://github.com/afilen86/PortMap/releases) · [Selected preview guide](web/public/orbit/README.md)
+
+Extract the release ZIP, then double-click **Port Map Orbit.html** on your Mac. No server or developer tools are needed. This preview uses saved data; it isn't a native Mac installer or a live hardware scanner.
+
+To build the offline ZIP and SHA-256 checksum from source (Python 3.10+):
+
+```bash
+python3 web/design-tools/package-orbit.py
+```
+
+Packages are written to `web/release/`. Tags named `orbit-preview-v<web/package.json version>` run the GitHub release workflow, which builds, tests, and publishes a preview prerelease. Release notes live in `web/releases/`.
+
+## Browser UI development
+
+A browser-based React + TypeScript UI now lives in [`web/`](web/README.md). It uses the saved WhatCable report, includes Overview, Connection tree, and Ports views, and supports light/dark themes, search, JSON import, and preview scenarios.
+
+```bash
+cd web
+npm ci
+npm run dev        # http://localhost:5173
+npm run build
+npm test          # Chromium browser checks
+```
+
+Visual changes can be developed and checked on Linux, Windows, or macOS. The web UI includes a validated, versioned `WKWebView` bridge contract; embedding it into the Mac app is a separate next step. The existing SwiftUI app still builds as before. See [the web UI guide](web/README.md) for the data format, limitations, and integration instructions.
+
 ## Build
 
 ```bash

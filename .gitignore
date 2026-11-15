@@ -19,3 +19,16 @@ icon-swift-modules/
 *.swiftmodule
 
 .DS_Store
+
+# Browser UI dependencies and generated output
+web/node_modules/
+web/dist/
+web/test-results/
+web/playwright-report/
+web/*.tsbuildinfo
+
+# Design generator bytecode
+web/design-tools/__pycache__/
+
+# Offline preview release packages
+web/release/

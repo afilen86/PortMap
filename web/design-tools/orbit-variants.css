@@ -1,0 +1,544 @@
+/* Orbit variations: geometry and portrait scale come from the generated data.
+   These themes build on Orbit's shared, persistent-photo interaction model. */
+body[data-variant] {
+  color: var(--ink);
+  background: var(--bg);
+}
+body[data-variant] .concept-head {
+  padding: 19px 32px 18px;
+  max-width: none;
+}
+body[data-variant] .concept-head h1 {
+  font-size: 30px;
+  line-height: 1.1;
+}
+body[data-variant] .concept-head p {
+  font-size: 12px;
+  max-width: 690px;
+}
+body[data-variant] .concept-badges {
+  gap: 7px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 430px;
+}
+body[data-variant] .badge {
+  font-size: 10px;
+  padding: 7px 10px;
+}
+body[data-variant] .lab-bar {
+  min-height: 57px;
+}
+body[data-variant] .lab-brand strong {
+  font-size: 11px;
+}
+body[data-variant] .lab-counter {
+  font-size: 10px;
+}
+body[data-variant] .app-frame {
+  margin: 0 24px;
+}
+body[data-variant] .app-bar {
+  min-height: 52px;
+  padding: 9px 18px;
+}
+body[data-variant] .stage {
+  height: 820px;
+}
+body[data-variant] .stage-wrap {
+  min-height: 240px;
+}
+body[data-variant] .device {
+  overflow: visible;
+  padding: 0;
+  border-radius: 45% 45% 15px 15px;
+}
+body[data-variant] .device .photo {
+  height: var(--well-size);
+  margin: 4px 8px 0;
+  overflow: hidden;
+  background: none;
+  border-radius: 45% 45% 9px 9px;
+}
+body[data-variant] .device .photo .sprite {
+  width: var(--portrait-size) !important;
+  height: var(--portrait-size) !important;
+}
+body[data-variant] .device .photo img {
+  width: min(100%, calc(var(--portrait-size) * 1.5));
+  height: min(100%, var(--portrait-size));
+  background: none;
+  mix-blend-mode: multiply;
+  border-radius: 0;
+}
+body[data-variant] .device-name {
+  font-size: 12px;
+  letter-spacing: -0.1px;
+  line-height: 1.25;
+}
+body[data-variant] .device-sub {
+  font-size: 9px;
+  letter-spacing: -0.15px;
+  white-space: nowrap;
+  line-height: 1.25;
+  margin-top: 4px;
+}
+body[data-variant] .device.host,
+body[data-variant] .device.hub {
+  border-radius: 22px;
+}
+body[data-variant] .device.host .device-name {
+  font-size: 17px;
+  letter-spacing: -0.5px;
+}
+body[data-variant] .device.host .device-sub {
+  font-size: 10px;
+}
+body[data-variant] .device.hub .device-name {
+  font-size: 13px;
+}
+body[data-variant] .device-tag {
+  right: 10px;
+  top: 11px;
+  font-size: 9px;
+}
+body[data-variant] .selected-check {
+  left: 10px;
+  top: 11px;
+}
+body[data-variant] .connection-bar {
+  min-height: 70px;
+  padding: 12px 18px;
+  gap: 20px;
+}
+body[data-variant] .legend-bar {
+  margin: 0 28px;
+  padding: 10px 0;
+}
+body[data-variant] .bottom-note {
+  padding: 0 28px 12px;
+}
+body[data-variant] .orbit-rings {
+  width: 850px;
+  height: 610px;
+  left: 355px;
+  top: 100px;
+}
+body[data-variant] .orbit-rings:before {
+  inset: -45px -145px;
+}
+body[data-variant] .orbit-rings:after {
+  inset: 75px 100px;
+}
+body[data-variant] .wire {
+  opacity: 0.72;
+}
+body[data-variant] .edge.traced .wire {
+  opacity: 1;
+  stroke-width: 2.8;
+}
+body[data-variant] .route button:last-child {
+  font-family: inherit;
+  font-size: 11px;
+}
+/* 01 — Glacier: pale porcelain, soft blue, a stretched elliptical orbit. */
+body[data-variant="glacier"] {
+  --bg: #f1f6f9;
+  --panel: #ffffff;
+  --ink: #244054;
+  --muted: #6b8391;
+  --line: #d8e6ed;
+  --accent: #287fab;
+  --soft: #e1f1f8;
+  --usb: #5a99a5;
+  --thunderbolt: #8b7cbc;
+  --display: #478dbb;
+  --audio: #ba8b6b;
+  --card: #ffffffc9;
+  --card-border: #d6e8f1;
+  --shadow: 0 6px 20px #588b9b09;
+  color-scheme: light;
+}
+body[data-variant="glacier"] .lab-bar {
+  background: #ffffff;
+}
+body[data-variant="glacier"] .lab-tabs {
+  background: #f0f6f9;
+  border-color: #dfebf0;
+}
+body[data-variant="glacier"] .lab-tabs button[aria-selected="true"] {
+  color: #287fab;
+}
+body[data-variant="glacier"] .concept-head h1 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 450;
+  letter-spacing: -1.1px;
+}
+body[data-variant="glacier"] .concept-kicker {
+  color: #6d9bb2;
+}
+body[data-variant="glacier"] .app-frame {
+  border-color: #d6e4eb;
+  box-shadow: 0 6px 35px #5d8a9e08;
+}
+body[data-variant="glacier"] .app-bar {
+  background: #fbfdfe;
+}
+body[data-variant="glacier"] .stage-wrap {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    #ffffff 0%,
+    #f4f9fc 49%,
+    #ecf3f7 100%
+  );
+}
+body[data-variant="glacier"] .device {
+  background: #ffffffac;
+  border-color: #ffffff;
+}
+body[data-variant="glacier"] .device.host {
+  background: #ffffff;
+  border-color: #a7cfe3;
+  box-shadow:
+    0 0 0 10px #e9f4fa,
+    0 9px 30px #4189ae12;
+}
+body[data-variant="glacier"] .device.hub {
+  background: #edf6fb;
+  border-color: #d6e8f0;
+}
+body[data-variant="glacier"] .device.in-route:not(.selected) {
+  border-color: #82b9d2;
+}
+body[data-variant="glacier"] .device.selected {
+  border-color: #287fab;
+  box-shadow: 0 0 0 4px #dceff8;
+}
+body[data-variant="glacier"] .device-tag {
+  background: #edf5f8;
+  color: #7f98a6;
+}
+body[data-variant="glacier"] .zone-label {
+  color: #8da6b3;
+  font:
+    10px -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+body[data-variant="glacier"] .orbit-rings {
+  border-color: #d8e8f0;
+}
+body[data-variant="glacier"] .orbit-rings:before {
+  border-color: #e1edf3;
+}
+body[data-variant="glacier"] .orbit-rings:after {
+  border-color: #deebf1;
+}
+body[data-variant="glacier"] .logo {
+  background: #287fab;
+}
+/* 02 — After Hours: dark mulberry, rose highlights, larger hardware portraits. */
+body[data-variant="afterhours"] {
+  --bg: #211e2b;
+  --panel: #2b2637;
+  --ink: #f5edf3;
+  --muted: #b8aabf;
+  --line: #44394f;
+  --accent: #e5adbe;
+  --soft: #4c3547;
+  --usb: #92bfc1;
+  --thunderbolt: #b89bdf;
+  --display: #9faee2;
+  --audio: #dfb07e;
+  --card: #332c3c;
+  --card-border: #514155;
+  --shadow: 0 8px 30px #08040d19;
+  color-scheme: dark;
+}
+body[data-variant="afterhours"] .lab-bar {
+  background: #221d2b;
+  border-color: #413448;
+}
+body[data-variant="afterhours"] .lab-tabs {
+  background: #191720;
+  border-color: #43364a;
+}
+body[data-variant="afterhours"] .lab-tabs button[aria-selected="true"] {
+  background: #4c3547;
+  color: #f2c4d2;
+}
+body[data-variant="afterhours"] .lab-brand > span:first-child {
+  background: #302638;
+}
+body[data-variant="afterhours"] .concept-head h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 32px;
+}
+body[data-variant="afterhours"] .concept-kicker {
+  color: #d5a0b8;
+}
+body[data-variant="afterhours"] .app-frame {
+  border-color: #4b3b52;
+  background: #2b2637;
+}
+body[data-variant="afterhours"] .app-bar {
+  background: #2a2333;
+}
+body[data-variant="afterhours"] .stage-wrap {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    #39283e,
+    #231f2e 65%,
+    #211c29
+  );
+}
+body[data-variant="afterhours"] .device {
+  background: #342d3d;
+  border-radius: 20px;
+  border-color: #4f4055;
+  box-shadow: 0 5px 20px #0a051310;
+}
+body[data-variant="afterhours"] .device .photo {
+  margin: 6px 6px 0;
+  height: calc(var(--well-size) - 3px);
+  background: radial-gradient(ellipse, #faf3f5, #dad0dc);
+  border-radius: 14px;
+}
+body[data-variant="afterhours"] .device .photo img {
+  mix-blend-mode: multiply;
+}
+body[data-variant="afterhours"] .device.host {
+  background: #4d344b;
+  border-color: #be8eaa;
+  box-shadow:
+    0 0 0 9px #a46e9310,
+    0 0 38px #e0a2be0b;
+}
+body[data-variant="afterhours"] .device.host .photo {
+  background: radial-gradient(ellipse, #fceaf2, #b69daf);
+}
+body[data-variant="afterhours"] .device.hub {
+  background: #3e3047;
+  border-color: #68516f;
+}
+body[data-variant="afterhours"] .device.selected {
+  border-color: #f2c4d2;
+  box-shadow:
+    0 0 0 4px #e5adbe12,
+    0 0 30px #e5adbe12;
+}
+body[data-variant="afterhours"] .device.in-route:not(.selected) {
+  border-color: #ac7e9d;
+}
+body[data-variant="afterhours"] .device-name {
+  font-weight: 550;
+}
+body[data-variant="afterhours"] .device-tag {
+  background: #463548;
+  color: #f2d5e0;
+}
+body[data-variant="afterhours"] .selected-check {
+  color: #342d3d;
+}
+body[data-variant="afterhours"] .device.host .device-sub {
+  color: #e5adbe;
+}
+body[data-variant="afterhours"] .orbit-rings {
+  border-color: #6e47613b;
+}
+body[data-variant="afterhours"] .orbit-rings:before {
+  border-color: #6e47612b;
+}
+body[data-variant="afterhours"] .orbit-rings:after {
+  border-color: #85627830;
+}
+body[data-variant="afterhours"] .zone-label {
+  color: #a18ca6;
+  font:
+    10px -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  letter-spacing: 1.6px;
+}
+body[data-variant="afterhours"] .edge.traced .wire {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--edge) 35%, transparent));
+}
+body[data-variant="afterhours"] .connection-bar {
+  background: #2a2333;
+}
+body[data-variant="afterhours"] .logo {
+  background: #e5adbe;
+  color: #322437;
+}
+/* 03 — Clay Studio: smaller satellites, a generous host, warm matte surfaces. */
+body[data-variant="clay"] {
+  --bg: #eee7de;
+  --panel: #faf5ec;
+  --ink: #544638;
+  --muted: #90806e;
+  --line: #ddd0bf;
+  --accent: #ae684c;
+  --soft: #edd9c8;
+  --usb: #9d9e70;
+  --thunderbolt: #b296ad;
+  --display: #7996a3;
+  --audio: #c58755;
+  --card: #f7efe3;
+  --card-border: #e4d5c1;
+  --shadow: 0 7px 15px #6f49320a;
+  color-scheme: light;
+}
+body[data-variant="clay"] .lab-bar {
+  background: #faf5ec;
+}
+body[data-variant="clay"] .lab-tabs {
+  background: #eee5d9;
+  border-color: #e2d3c0;
+}
+body[data-variant="clay"] .lab-tabs button[aria-selected="true"] {
+  background: #faf5ec;
+  color: #995b42;
+}
+body[data-variant="clay"] .concept-head h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 31px;
+}
+body[data-variant="clay"] .concept-kicker {
+  color: #b17e58;
+}
+body[data-variant="clay"] .app-frame {
+  border-color: #dfcfbb;
+}
+body[data-variant="clay"] .app-bar {
+  background: #f5ede0;
+}
+body[data-variant="clay"] .stage-wrap {
+  background: radial-gradient(ellipse at 50% 50%, #f6eee0, #ede4d7 75%);
+}
+body[data-variant="clay"] .device {
+  border-radius: 16px;
+  background: #faf3e8;
+  border-color: #e8dac7;
+  box-shadow: 0 3px 8px #6b4d2d04;
+}
+body[data-variant="clay"] .device-name {
+  font-size: 11px;
+}
+body[data-variant="clay"] .device-sub {
+  font-size: 8px;
+}
+body[data-variant="clay"] .device .photo {
+  border-radius: 12px;
+}
+body[data-variant="clay"] .device.host {
+  background: #e2c8ae;
+  border-color: #d2af8d;
+  border-radius: 38px;
+  box-shadow:
+    0 0 0 12px #e8d8c445,
+    0 14px 30px #8f6c4320;
+}
+body[data-variant="clay"] .device.hub {
+  background: #e9e2cc;
+  border-color: #d5ceb5;
+  border-radius: 20px;
+}
+body[data-variant="clay"] .device.in-route:not(.selected) {
+  border-color: #c9a783;
+}
+body[data-variant="clay"] .device.selected {
+  border-color: #ae684c;
+  box-shadow: 0 0 0 4px #ae684c12;
+}
+body[data-variant="clay"] .device-tag {
+  background: #f1e5d4;
+  color: #ac977e;
+  top: 7px;
+  right: 7px;
+}
+body[data-variant="clay"] .device.host .device-sub {
+  color: #885a3f;
+}
+body[data-variant="clay"] .zone-label {
+  color: #ad967b;
+  font-size: 13px;
+}
+body[data-variant="clay"] .orbit-rings {
+  width: 860px;
+  height: 530px;
+  left: 350px;
+  top: 135px;
+  border-color: #d8c9b3;
+}
+body[data-variant="clay"] .orbit-rings:before {
+  inset: -60px -170px;
+  border-color: #dfd0bd;
+}
+body[data-variant="clay"] .orbit-rings:after {
+  inset: 80px 120px;
+  border-color: #d9c9b2;
+}
+body[data-variant="clay"] .logo {
+  background: #ae684c;
+}
+@media (max-width: 1100px) {
+  body[data-variant] .concept-head {
+    padding: 18px 22px;
+  }
+  body[data-variant] .concept-badges {
+    max-width: 260px;
+  }
+  body[data-variant] .concept-badges .badge:first-child {
+    display: none;
+  }
+  body[data-variant] .concept-badges .badge:nth-child(2) {
+    display: flex;
+  }
+  body[data-variant] .concept-head p {
+    max-width: 560px;
+  }
+}
+@media (max-width: 760px) {
+  body[data-variant] .lab-brand strong {
+    display: none;
+  }
+  body[data-variant] .concept-head {
+    padding: 17px 18px;
+  }
+  body[data-variant] .concept-head h1 {
+    font-size: 26px;
+  }
+  body[data-variant] .concept-head p {
+    font-size: 11px;
+  }
+  body[data-variant] .app-frame {
+    margin: 0 10px;
+  }
+  body[data-variant] .concept-badges {
+    display: none;
+  }
+  body[data-variant] .app-bar {
+    padding: 9px;
+  }
+  body[data-variant] .connection-bar {
+    min-height: 100px;
+    padding: 10px 12px;
+  }
+  body[data-variant] .legend-bar {
+    margin: 0 14px;
+  }
+  body[data-variant] .bottom-note {
+    padding: 0 14px 10px;
+  }
+}
+/* The host badge already communicates its role; keep the larger name comfortably inside. */
+body[data-variant] .device.host .device-sub {
+  display: none;
+}
+body[data-variant] .device.hub .photo {
+  height: calc(var(--well-size) - 4px);
+}

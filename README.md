@@ -20,7 +20,7 @@ The version and build number come from `port-map-source/Info.plist`. Bump them t
   - `PortMapApp.swift`: the app entry point, window and main map view
   - `PortScan.swift`: runs WhatCable and parses its JSON into ports and connections
   - `SetupView.swift`: the setup and overview diagrams, the device artwork and the routing
-  - `Info.plist`, `Resources/`: bundle metadata, artwork and icon
+  - `Info.plist`, `Resources/`: bundle metadata, artwork and icon. `CalDigit*.jpg` and `Satechi*.jpg` are product photos from Adorama's listings (CalDigit Element Hub `cd500934`, Satechi ST-GNMMES `satstgnmmes`), trimmed for the hub ports panel; they're for personal use in this app
 - `OverviewCheck.swift`, `HubOverviewCheck.swift`, `port-map-verify/`: standalone layout check programs from the Codex sessions
 - `MakePortMapIcon.swift`, `PortMap.iconset/`: icon generation
 - `*.py`: one-off scripts Codex used to patch the source (history only)

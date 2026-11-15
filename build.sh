@@ -46,7 +46,10 @@ cp "$SRC/Resources/"* "$APP/Contents/Resources/"
 # Ad-hoc signature so macOS will launch it locally. Extended attributes
 # (Finder info, quarantine) on copied files make codesign refuse the bundle.
 xattr -cr "$APP"
-codesign --force --sign - "$APP" 2>/dev/null
+if ! sign_output=$(codesign --force --sign - "$APP" 2>&1); then
+  echo "$sign_output" >&2
+  exit 1
+fi
 codesign --verify "$APP"
 
 echo "Built: $APP"

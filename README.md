@@ -1,0 +1,26 @@
+# Port Map
+
+A SwiftUI Mac app that maps what is plugged into this Mac: each port, the hubs and devices behind it, and the cable path between them. Port data comes from the WhatCable helper, which must be installed (the app in /Applications, or `whatcable` from Homebrew).
+
+## Build
+
+```bash
+./build.sh          # builds build/Port Map.app
+./build.sh --run    # build and open
+./build.sh --zip    # build and zip to build/PortMap-<version>-build<n>.zip
+```
+
+Requires the Xcode command-line tools (Swift 6, macOS 14+, Apple silicon).
+
+The version and build number come from `port-map-source/Info.plist`. Bump them there before a release.
+
+## Layout
+
+- `port-map-source/`: the app
+  - `PortMapApp.swift`: the app entry point, window and main map view
+  - `PortScan.swift`: runs WhatCable and parses its JSON into ports and connections
+  - `SetupView.swift`: the setup and overview diagrams, the device artwork and the routing
+  - `Info.plist`, `Resources/`: bundle metadata, artwork and icon
+- `OverviewCheck.swift`, `HubOverviewCheck.swift`, `port-map-verify/`: standalone layout check programs from the Codex sessions
+- `MakePortMapIcon.swift`, `PortMap.iconset/`: icon generation
+- `*.py`: one-off scripts Codex used to patch the source (history only)

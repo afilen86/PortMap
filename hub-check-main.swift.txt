@@ -1,0 +1,92 @@
+@main struct HubOverviewCheck {
+ static func main() throws {
+  let scan = try PortScan.capture()
+  let all = OverviewInventory(scan: scan)
+  precondition(all.hubs.count == 2, "Expected current setup's two recognized hubs")
+  var branchIDs: [Set<String>] = []
+  for hub in all.hubs {
+   let branch = all.branch(rootID: hub.id)
+   let ids = Set(branch.devices.map(\.id))
+   branchIDs.append(ids)
+   precondition(!ids.contains("host"), "Host leaked into downstream view")
+   precondition(branch.devices.filter { $0.id == hub.id }.count == 1)
+   precondition(branch.devices.allSatisfy { $0.port?.id == hub.port?.id }, "Foreign port device leaked into hub branch")
+   precondition(branch.interfaces.allSatisfy { ids.contains($0.parentID) }, "Foreign interface in branch")
+   precondition(branch.devices.filter { $0.id != hub.id }.allSatisfy { ids.contains($0.parentID ?? "") }, "Descendant unreachable")
+   precondition(!branch.devices.contains { $0.art == .lacie || $0.title == "Realtek 5 GbE adapter" || $0.port?.group == "Display" }, "Direct connection leaked into branch")
+   if hub.art == .element {
+    precondition(branch.devices.count == 7 + branch.devices.filter { $0.art == .twister }.count)
+    precondition(branch.devices.filter { $0.art == .monitor }.count == 2)
+    let x1 = branch.devices.first { $0.art == .x1 }!
+    precondition(branch.devices.first { $0.id == x1.parentID }?.art == .s4, "Controller chain lost")
+   }
+   if hub.art == .satechi {
+    precondition(branch.devices.count == 5 + branch.devices.filter { $0.art == .twister }.count)
+    precondition(!branch.devices.contains { $0.art == .monitor })
+    precondition(branch.devices.contains { $0.art == .expansion }, "USB 2 companion branch lost")
+   }
+   if hub.art == .element {
+    let hdmi = all.devices.first { $0.art == .monitor && $0.port?.group == "Display" && $0.title == "ingnok" }!
+    let layout = OverviewLayout(items: branch.devices, rootID: hub.id, reference: hdmi)
+    precondition(!branch.devices.contains { $0.id == hdmi.id })
+    let upper = branch.devices.first { $0.title == "ingnok" }!
+    let lower = branch.devices.first { $0.title == "12.3FHD" }!
+    let twister = branch.devices.first { $0.art == .twister }!
+    let u = layout.frames[upper.id]!, l = layout.frames[lower.id]!, t = layout.frames[twister.id]!
+    precondition(u.midX == l.midX && u.maxY < l.minY, "Displays not stacked")
+    let ref = layout.referenceFrame!
+    precondition(ref.minX > t.maxX && ref.minX-t.maxX <= 40 && ref.midY == t.midY && ref.maxX <= layout.size.width, "HDMI reference not beside Twister")
+    precondition(OverviewLayout(items: branch.devices, rootID: hub.id).referenceFrame == nil, "Missing HDMI still rendered")
+    precondition(t.minX > l.maxX && t.minX-l.maxX <= 40 && t.midY == l.midY, "Twister not immediately right of 12.3FHD")
+    precondition(branch.devices.filter { [.s4, .z1, .x1].contains($0.art) }.allSatisfy { layout.frames[$0.id]!.minY > l.maxY }, "Traktor devices not below display/Twister row")
+    checkFit(branch, hub.id, reference: hdmi)
+    print("PASS: live Twister recognized, confirmed display/Twister geometry, and Traktor lower tier")
+   }
+   checkFit(branch, hub.id)
+   print("PASS \(hub.title): \(branch.devices.count) cards (including hub), \(branch.interfaces.count) interfaces")
+   for d in branch.devices { print("  \(d.title) | \(d.id) | parent \(d.parentID ?? "none")") }
+  }
+  precondition(branchIDs[0].isDisjoint(with: branchIDs[1]), "Current hubs share nodes incorrectly")
+  let empty = OverviewInventory(scan: PortScan(ports: [], version: "test", isMacMini: true))
+  precondition(empty.hubs.isEmpty && empty.branch(rootID:"missing").devices.isEmpty)
+  let hubPortIDs = Set(all.hubs.compactMap { $0.port?.id })
+  let disconnected = OverviewInventory(scan: PortScan(ports: scan.ports.filter { !hubPortIDs.contains($0.id) }, version: "test", isMacMini: true))
+  precondition(disconnected.hubs.isEmpty, "Direct devices treated as hubs after disconnection")
+  let emptyHubPort = Port(id: "empty-hub-port", position: "Left", group: "Rear Thunderbolt", label: "Satechi", connected: true, link: "10 Gb/s", cable: nil, cableMatches: [], connections: [Connection(id: "empty-hub", name: "Mac Mini Stand & Hub", detail: nil, speed: "10 Gb/s", icon: "point.3.connected.trianglepath.dotted")])
+  let emptyHub = OverviewInventory(scan: PortScan(ports: [emptyHubPort], version: "test", isMacMini: true))
+  let root = emptyHub.hubs.first!
+  let branch = emptyHub.branch(rootID:root.id)
+  precondition(branch.devices.count == 1 && branch.interfaces.isEmpty)
+  checkFit(branch, root.id)
+  for name in ["MIDI Fighter Twister", "MIDIFIGHTER Twister", "DJ TechTools MIDI-Fighter Twister", "Midi Fighter Twister (USB MIDI)"] {
+   let twister = Connection(id: "twister-test", name: name, detail: "DJ TechTools", speed: "Full Speed (12 Mbps)", icon: "cable.connector")
+   let hubNode = Connection(id: "test-hub", name: "Mac Mini Stand & Hub", detail: nil, speed: "10 Gb/s", icon: "point.3.connected.trianglepath.dotted", children: [twister])
+   let port = Port(id: "test-port", position: "Left", group: "Rear Thunderbolt", label: "Hub", connected: true, link: "10 Gb/s", cable: nil, cableMatches: [], connections: [hubNode])
+   let inventory = OverviewInventory(scan: PortScan(ports: [port], version: "test", isMacMini: true))
+   let hub = inventory.hubs.first!
+   let branch = inventory.branch(rootID: hub.id)
+   precondition(branch.devices.count == 2 && branch.devices.contains { $0.art == .twister && $0.category == 1 }, "Twister name variant missed")
+   checkFit(branch, hub.id)
+  }
+  print("PASS: empty/disconnected states and all four Twister enumeration variants")
+ }
+ private static func checkFit(_ branch: OverviewInventory, _ rootID: String, reference: OverviewDevice? = nil) {
+  let layout = OverviewLayout(items: branch.devices, rootID: rootID, reference: reference)
+  precondition(Set(layout.frames.keys) == Set(branch.devices.map(\.id)), "Missing or foreign frame")
+  for width: CGFloat in [920, 1280, 1861] {
+   for height: CGFloat in [680, 900, 1050] {
+    for reserved: CGFloat in [0, 260] {
+     let viewport = CGSize(width: width, height: height-reserved)
+     let scale = min(viewport.width/layout.size.width, viewport.height/layout.size.height)
+     let x = (viewport.width-layout.size.width*scale)/2
+     let y = (viewport.height-layout.size.height*scale)/2
+     for frame in Array(layout.frames.values) + [layout.referenceFrame].compactMap({ $0 }) {
+      precondition(frame.minX >= 0 && frame.minY >= 0 && frame.maxX <= layout.size.width && frame.maxY <= layout.size.height, "Canvas overflow")
+      precondition(x+frame.minX*scale >= -0.001 && y+frame.minY*scale >= -0.001 && x+frame.maxX*scale <= viewport.width+0.001 && y+frame.maxY*scale <= viewport.height+0.001, "Viewport overflow")
+     }
+    }
+   }
+  }
+  print("PASS: 18 fit combinations for \(rootID); scene \(layout.size)")
+ }
+}

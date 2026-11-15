@@ -1,0 +1,21 @@
+# Build output (./build.sh)
+build/
+
+# Old hand-built apps and binaries from the Codex sessions
+*.app/
+release-*/
+package-check/
+PortMap-v1.*
+OverviewCheck
+HubOverviewCheck
+port-map-verify/check
+port-map-verify/check-local
+
+# Swift module caches
+swift-modules/
+scan-swift-modules/
+icon-swift-modules/
+*.pcm
+*.swiftmodule
+
+.DS_Store

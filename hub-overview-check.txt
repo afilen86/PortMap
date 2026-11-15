@@ -1,0 +1,25 @@
+PASS: 18 fit combinations for Port-USB-C@2/switch-3; scene (1200.0, 770.0)
+PASS: live Twister recognized, confirmed display/Twister geometry, and Traktor lower tier
+PASS: 18 fit combinations for Port-USB-C@2/switch-3; scene (1200.0, 770.0)
+PASS CalDigit Element Hub: 8 cards (including hub), 8 interfaces
+  CalDigit Element Hub | Port-USB-C@2/switch-3 | parent host
+  ASMedia 246x NVMe enclosure | Port-USB-C@2/switch-4 | parent Port-USB-C@2/switch-3
+  12.3FHD | Port-USB-C@2/display-0 | parent Port-USB-C@2/switch-3
+  ingnok | Port-USB-C@2/display-1 | parent Port-USB-C@2/switch-3
+  Traktor Z1 MK2 | Port-USB-C@2/0x01111000 | parent Port-USB-C@2/switch-3
+  Traktor Kontrol S4 MK3 | Port-USB-C@2/0x01114000 | parent Port-USB-C@2/switch-3
+  Traktor X1 MK3 | Port-USB-C@2/0x01114210 | parent Port-USB-C@2/0x01114000
+  MIDI Fighter Twister | Port-USB-C@2/0x01115000 | parent Port-USB-C@2/switch-3
+PASS: 18 fit combinations for Port-USB-C@1/0x00200000; scene (1200.0, 276.0)
+PASS Satechi Stand & Hub: 5 cards (including hub), 3 interfaces
+  Satechi Stand & Hub | Port-USB-C@1/0x00200000 | parent host
+  Seagate Expansion Desktop | Port-USB-C@1/0x00122000 | parent Port-USB-C@1/0x00200000
+  SATECHI DISK Media | Port-USB-C@1/0x00210000 | parent Port-USB-C@1/0x00200000
+  Realtek 2.5 GbE adapter | Port-USB-C@1/0x00220000 | parent Port-USB-C@1/0x00200000
+  USB Storage | Port-USB-C@1/0x00240000 | parent Port-USB-C@1/0x00200000
+PASS: 18 fit combinations for empty-hub-port/empty-hub; scene (1200.0, 276.0)
+PASS: 18 fit combinations for test-port/test-hub; scene (1200.0, 486.0)
+PASS: 18 fit combinations for test-port/test-hub; scene (1200.0, 486.0)
+PASS: 18 fit combinations for test-port/test-hub; scene (1200.0, 486.0)
+PASS: 18 fit combinations for test-port/test-hub; scene (1200.0, 486.0)
+PASS: empty/disconnected states and all four Twister enumeration variants

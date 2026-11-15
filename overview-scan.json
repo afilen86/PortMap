@@ -1,0 +1,2246 @@
+{
+  "builtInDisplayPorts" : [
+    {
+      "displays" : [
+        {
+          "bottleneck" : "unknownMode",
+          "branchDevice" : "pHDMIg",
+          "cableAssessment" : "unlikelyTheCable",
+          "crossCheck" : {
+            "statementContradiction" : false
+          },
+          "currentMode" : {
+            "height" : 1080,
+            "pixelClockHz" : 148500000,
+            "refreshHz" : 60,
+            "width" : 1920
+          },
+          "detail" : "Your ingnok is connected, but the link rate isn't readable, so there's nothing to compare its capability against.",
+          "drivenTiming" : {
+            "colourModes" : [
+              {
+                "depth" : 8,
+                "encoding" : 0,
+                "encodingName" : "RGB 4:4:4",
+                "id" : 64,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 0,
+                "encodingName" : "RGB 4:4:4",
+                "id" : 65,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 3,
+                "encodingName" : "YCbCr 4:4:4",
+                "id" : 67,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 3,
+                "encodingName" : "YCbCr 4:4:4",
+                "id" : 66,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 10,
+                "encoding" : 0,
+                "encodingName" : "RGB 4:4:4",
+                "id" : 68,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 10,
+                "encoding" : 0,
+                "encodingName" : "RGB 4:4:4",
+                "id" : 69,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 10,
+                "encoding" : 0,
+                "encodingName" : "RGB 4:4:4",
+                "id" : 70,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 10,
+                "encoding" : 0,
+                "encodingName" : "RGB 4:4:4",
+                "id" : 71,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 10,
+                "encoding" : 3,
+                "encodingName" : "YCbCr 4:4:4",
+                "id" : 72,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 10,
+                "encoding" : 3,
+                "encodingName" : "YCbCr 4:4:4",
+                "id" : 73,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 10,
+                "encoding" : 3,
+                "encodingName" : "YCbCr 4:4:4",
+                "id" : 74,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 12,
+                "encoding" : 2,
+                "encodingName" : "YCbCr 4:2:2",
+                "id" : 10,
+                "isVirtual" : true,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 12,
+                "encoding" : 6,
+                "encodingName" : "YCbCr 4:2:2 (DP tunneling)",
+                "id" : 11,
+                "isVirtual" : true,
+                "supportsDSC" : 0
+              }
+            ],
+            "colourModesComplete" : true,
+            "downstream420" : "none",
+            "dscCapableIDs" : [
+
+            ],
+            "dscListComplete" : true,
+            "dscReading" : "uncompressed",
+            "dscRequiredIDs" : [
+
+            ],
+            "dscRequiredIDsRaw" : [
+
+            ],
+            "unsafeIDs" : [
+
+            ],
+            "unsafeIDsRaw" : [
+
+            ],
+            "unsafeListComplete" : true,
+            "validPixelEncodings" : 7037
+          },
+          "edid" : {
+            "blocks" : [
+              {
+                "checksumValid" : true,
+                "index" : 0,
+                "kind" : "base"
+              },
+              {
+                "checksumValid" : true,
+                "index" : 1,
+                "kind" : "cta861"
+              }
+            ],
+            "declaredExtensionCount" : 1,
+            "modes" : [
+              {
+                "hTotal" : 800,
+                "height" : 480,
+                "interlaced" : false,
+                "pixelClockHz" : 25175000,
+                "refreshHz" : 59.94047619047619,
+                "source" : "established timing (DMT 0x4)",
+                "vTotal" : 525,
+                "width" : 640
+              },
+              {
+                "hTotal" : 1056,
+                "height" : 600,
+                "interlaced" : false,
+                "pixelClockHz" : 40000000,
+                "refreshHz" : 60.31654120826095,
+                "source" : "established timing (DMT 0x9)",
+                "vTotal" : 628,
+                "width" : 800
+              },
+              {
+                "hTotal" : 1344,
+                "height" : 768,
+                "interlaced" : false,
+                "pixelClockHz" : 65000000,
+                "refreshHz" : 60.00384024577573,
+                "source" : "established timing (DMT 0x10)",
+                "vTotal" : 806,
+                "width" : 1024
+              },
+              {
+                "hTotal" : 2200,
+                "height" : 1080,
+                "interlaced" : false,
+                "pixelClockHz" : 148500000,
+                "refreshHz" : 60,
+                "source" : "detailed timing 1 (block 0)",
+                "vTotal" : 1125,
+                "width" : 1920
+              },
+              {
+                "hTotal" : 1520,
+                "height" : 864,
+                "interlaced" : false,
+                "pixelClockHz" : 81624000,
+                "refreshHz" : 60,
+                "source" : "standard timing 1 (GTF)",
+                "vTotal" : 895,
+                "width" : 1152
+              },
+              {
+                "hTotal" : 1688,
+                "height" : 1024,
+                "interlaced" : false,
+                "pixelClockHz" : 108000000,
+                "refreshHz" : 60.01973982554262,
+                "source" : "standard timing 2 (DMT 0x23)",
+                "vTotal" : 1066,
+                "width" : 1280
+              },
+              {
+                "hTotal" : 1800,
+                "height" : 900,
+                "interlaced" : false,
+                "pixelClockHz" : 108000000,
+                "refreshHz" : 60,
+                "source" : "standard timing 3 (DMT 0x53)",
+                "vTotal" : 1000,
+                "width" : 1600
+              },
+              {
+                "hTotal" : 2200,
+                "height" : 1080,
+                "interlaced" : false,
+                "pixelClockHz" : 148500000,
+                "refreshHz" : 60,
+                "source" : "standard timing 4 (DMT 0x52)",
+                "vTotal" : 1125,
+                "width" : 1920
+              },
+              {
+                "hTotal" : 1650,
+                "height" : 720,
+                "interlaced" : false,
+                "pixelClockHz" : 74250000,
+                "refreshHz" : 60,
+                "source" : "CTA VIC 69 (block 1)",
+                "vTotal" : 750,
+                "width" : 1280
+              },
+              {
+                "hTotal" : 2200,
+                "height" : 1080,
+                "interlaced" : false,
+                "pixelClockHz" : 148500000,
+                "refreshHz" : 60,
+                "source" : "detailed timing 1 (block 1)",
+                "vTotal" : 1125,
+                "width" : 1920
+              }
+            ],
+            "monitorName" : "ingnok",
+            "preferredMode" : {
+              "hTotal" : 2200,
+              "height" : 1080,
+              "interlaced" : false,
+              "pixelClockHz" : 148500000,
+              "refreshHz" : 60,
+              "source" : "detailed timing 1 (block 0)",
+              "vTotal" : 1125,
+              "width" : 1920
+            },
+            "rangeLimits" : {
+              "maxHorizontalKHz" : 84,
+              "maxPixelClockHz" : 200000000,
+              "maxVerticalHz" : 75,
+              "minHorizontalKHz" : 30,
+              "minVerticalHz" : 50,
+              "timingSupport" : "defaultGTF"
+            },
+            "undecodedStandardTimings" : [
+
+            ],
+            "version" : "1.3"
+          },
+          "isAppleDisplay" : false,
+          "isWarning" : false,
+          "lanes" : 4,
+          "maxLanes" : 4,
+          "monitorName" : "ingnok",
+          "neededGbps" : 3.564,
+          "rate" : "No Link",
+          "summary" : "Display connected",
+          "topMode" : {
+            "height" : 1080,
+            "pixelClockHz" : 148500000,
+            "refreshHz" : 60,
+            "source" : "detailed timing 1 (block 0)",
+            "width" : 1920
+          },
+          "topModeOnLink" : {
+            "availability" : "offeredUncompressed",
+            "match" : "exact",
+            "statementOffersTopMode" : true,
+            "timing" : {
+              "height" : 1080,
+              "id" : 38,
+              "interlaced" : false,
+              "lists" : {
+                "colourModes" : [
+                  {
+                    "depth" : 8,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 64,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 65,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 3,
+                    "encodingName" : "YCbCr 4:4:4",
+                    "id" : 67,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 3,
+                    "encodingName" : "YCbCr 4:4:4",
+                    "id" : 66,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 10,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 68,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 10,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 69,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 10,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 70,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 10,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 71,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 10,
+                    "encoding" : 3,
+                    "encodingName" : "YCbCr 4:4:4",
+                    "id" : 72,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 10,
+                    "encoding" : 3,
+                    "encodingName" : "YCbCr 4:4:4",
+                    "id" : 73,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 10,
+                    "encoding" : 3,
+                    "encodingName" : "YCbCr 4:4:4",
+                    "id" : 74,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 12,
+                    "encoding" : 2,
+                    "encodingName" : "YCbCr 4:2:2",
+                    "id" : 10,
+                    "isVirtual" : true,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 12,
+                    "encoding" : 6,
+                    "encodingName" : "YCbCr 4:2:2 (DP tunneling)",
+                    "id" : 11,
+                    "isVirtual" : true,
+                    "supportsDSC" : 0
+                  }
+                ],
+                "colourModesComplete" : true,
+                "downstream420" : "none",
+                "dscCapableIDs" : [
+
+                ],
+                "dscListComplete" : true,
+                "dscReading" : "uncompressed",
+                "dscRequiredIDs" : [
+
+                ],
+                "dscRequiredIDsRaw" : [
+
+                ],
+                "unsafeIDs" : [
+
+                ],
+                "unsafeIDsRaw" : [
+
+                ],
+                "unsafeListComplete" : true,
+                "validPixelEncodings" : 7037
+              },
+              "pixelClockHz" : 148500000,
+              "refreshHz" : 60,
+              "width" : 1920
+            },
+            "topModeListedByNode" : true
+          }
+        }
+      ],
+      "name" : "Port-HDMI@1",
+      "portNumber" : 1,
+      "type" : "HDMI"
+    }
+  ],
+  "isDesktopMac" : true,
+  "ports" : [
+    {
+      "billboardDevicePresent" : true,
+      "bulletGroups" : [
+        {
+          "header" : "What the cable's e-marker reports",
+          "lines" : [
+
+          ],
+          "source" : "emarker",
+          "state" : "No e-marker read. The cable may have one; macOS usually reads it above 3A or over Thunderbolt."
+        },
+        {
+          "header" : "What your Mac measured",
+          "lines" : [
+            "USB 3.2 Gen 2 (10 Gbps)"
+          ],
+          "source" : "measured"
+        }
+      ],
+      "bullets" : [
+        "No e-marker read. The cable may have one; macOS usually reads it above 3A or over Thunderbolt.",
+        "USB 3.2 Gen 2 (10 Gbps)"
+      ],
+      "className" : "AppleHPMInterfaceType10",
+      "connectionActive" : true,
+      "dataLink" : {
+        "bottleneck" : "deviceLimit",
+        "cableSignalConflict" : false,
+        "detail" : "This is the fastest the connected device supports. It is not a cable problem.",
+        "isWarning" : false,
+        "summary" : "Device runs at 10 Gbps"
+      },
+      "devices" : [
+        {
+          "children" : [
+            {
+              "children" : [
+                {
+                  "locationID" : "0x00122000",
+                  "name" : "Expansion HDD",
+                  "productID" : 8248,
+                  "serialNumber" : "00000000NT17HMHV",
+                  "speed" : "High Speed (480 Mbps)",
+                  "usbVersion" : "2.1",
+                  "vendorID" : 3010,
+                  "vendorName" : "Seagate"
+                }
+              ],
+              "locationID" : "0x00120000",
+              "name" : "USB 2.0 Hub",
+              "productID" : 2049,
+              "speed" : "High Speed (480 Mbps)",
+              "usbVersion" : "2.0",
+              "vendorID" : 6720,
+              "vendorName" : "TERMINUS TECHNOLOGY INC."
+            },
+            {
+              "locationID" : "0x00150000",
+              "name" : "USB Billboard Device",
+              "productID" : 2340,
+              "speed" : "High Speed (480 Mbps)",
+              "usbVersion" : "2.0.1",
+              "vendorID" : 12558,
+              "vendorName" : "SATECHI"
+            }
+          ],
+          "locationID" : "0x00100000",
+          "name" : "USB2.0 Hub",
+          "productID" : 10532,
+          "speed" : "High Speed (480 Mbps)",
+          "usbVersion" : "2.1",
+          "vendorID" : 12558,
+          "vendorName" : "SATECHI"
+        },
+        {
+          "children" : [
+            {
+              "locationID" : "0x00210000",
+              "name" : "SATECHI DISK Media",
+              "productID" : 37453,
+              "serialNumber" : "1265C7",
+              "speed" : "Super Speed+ (10 Gbps)",
+              "usbVersion" : "3.2",
+              "vendorID" : 12558,
+              "vendorName" : "SATECHI"
+            },
+            {
+              "locationID" : "0x00220000",
+              "name" : "USB 10_100_1G_2_5G LAN",
+              "productID" : 33110,
+              "serialNumber" : "4013000001",
+              "speed" : "Super Speed (5 Gbps)",
+              "usbVersion" : "3.2",
+              "vendorID" : 3034,
+              "vendorName" : "Realtek"
+            },
+            {
+              "locationID" : "0x00240000",
+              "name" : "USB Storage",
+              "productID" : 1892,
+              "serialNumber" : "GLI9999999999988",
+              "speed" : "Super Speed (5 Gbps)",
+              "usbVersion" : "3.2",
+              "vendorID" : 1507,
+              "vendorName" : "Generic"
+            }
+          ],
+          "locationID" : "0x00200000",
+          "name" : "Mac Mini Stand & Hub",
+          "productID" : 55588,
+          "speed" : "Super Speed+ (10 Gbps)",
+          "usbVersion" : "3.2",
+          "vendorID" : 12558,
+          "vendorName" : "SATECHI"
+        }
+      ],
+      "headline" : "USB device",
+      "name" : "Port-USB-C@1",
+      "pdCapable" : true,
+      "powerSources" : [
+
+      ],
+      "status" : "dataDevice",
+      "subtitle" : "SuperSpeed data link is active.",
+      "thunderboltSwitchIndex" : 0,
+      "transports" : {
+        "active" : [
+          "CC",
+          "USB3",
+          "USB2"
+        ],
+        "provisioned" : [
+          "CC",
+          "USB3",
+          "USB2"
+        ],
+        "supported" : [
+          "CC",
+          "USB2",
+          "USB3",
+          "CIO",
+          "DisplayPort"
+        ],
+        "usb3Speed" : "USB 3.2 Gen 2 (10 Gbps)"
+      },
+      "type" : "USB-C"
+    },
+    {
+      "billboardDevicePresent" : false,
+      "bulletGroups" : [
+        {
+          "header" : "What the cable's e-marker reports",
+          "lines" : [
+            "Cable speed: USB4 Gen 3 (40 Gbps, Thunderbolt 4 class)",
+            "Cable rated for 5 A at up to 20V (~100W)",
+            "Passive (no signal-conditioning electronics)"
+          ],
+          "source" : "emarker"
+        },
+        {
+          "header" : "What your Mac measured",
+          "lines" : [
+            "Linked at up to 20 Gb\/s × 2",
+            "Connected via 2 hops: CalDigit, Inc. Element Hub → ASMedia 246x",
+            "Connected device: USB Hub, CalDigit, Inc. (0x2188) (PD 3.0)",
+            "Controller confirms Thunderbolt cable (40 Gbps capable)"
+          ],
+          "source" : "measured"
+        },
+        {
+          "header" : "What WhatCable knows",
+          "lines" : [
+            "Made by Sumitomo Electric Ind., Ltd., Optical Comm. R&D Lab (0x20C2), per our bundled vendor list",
+            "Cable identified as CalDigit TS4 dock bundled cable (Sumitomo silicon)"
+          ],
+          "source" : "database"
+        }
+      ],
+      "bullets" : [
+        "Cable speed: USB4 Gen 3 (40 Gbps, Thunderbolt 4 class)",
+        "Cable rated for 5 A at up to 20V (~100W)",
+        "Passive (no signal-conditioning electronics)",
+        "Linked at up to 20 Gb\/s × 2",
+        "Connected via 2 hops: CalDigit, Inc. Element Hub → ASMedia 246x",
+        "Connected device: USB Hub, CalDigit, Inc. (0x2188) (PD 3.0)",
+        "Controller confirms Thunderbolt cable (40 Gbps capable)",
+        "Made by Sumitomo Electric Ind., Ltd., Optical Comm. R&D Lab (0x20C2), per our bundled vendor list",
+        "Cable identified as CalDigit TS4 dock bundled cable (Sumitomo silicon)"
+      ],
+      "cable" : {
+        "activeLayoutContradiction" : false,
+        "curatedBrands" : [
+          "CalDigit TS4 dock bundled cable (Sumitomo silicon)"
+        ],
+        "currentRating" : "5 A",
+        "endpoint" : "SOP'",
+        "maxVolts" : 20,
+        "maxWatts" : 100,
+        "plugType" : "Type-C",
+        "speed" : "USB4 Gen 3 (40 Gbps, Thunderbolt 4 class)",
+        "type" : "passive",
+        "typeSource" : "emarker",
+        "vendorID" : 8386,
+        "vendorName" : "Sumitomo Electric Ind., Ltd., Optical Comm. R&D Lab"
+      },
+      "cio" : {
+        "asymmetricModeSupported" : true,
+        "cableGeneration" : 2,
+        "cableSpeed" : 3,
+        "generation" : 3,
+        "legacyAdapter" : false,
+        "linkTrainingMode" : 2
+      },
+      "className" : "AppleHPMInterfaceType10",
+      "connectionActive" : true,
+      "dataLink" : {
+        "bottleneck" : "fine",
+        "cableSignalConflict" : false,
+        "detail" : "Nothing is being held back: the parts we can see all support this speed.",
+        "isWarning" : false,
+        "summary" : "Running at full data speed (40 Gbps)"
+      },
+      "device" : {
+        "kind" : "USB Hub",
+        "pdRevision" : "PD 3.0",
+        "productID" : 51,
+        "vendorID" : 8584,
+        "vendorName" : "CalDigit, Inc."
+      },
+      "devices" : [
+        {
+          "children" : [
+            {
+              "children" : [
+                {
+                  "locationID" : "0x01111000",
+                  "name" : "Traktor Z1 MK2",
+                  "productID" : 9216,
+                  "serialNumber" : "00DDB9EB",
+                  "speed" : "High Speed (480 Mbps)",
+                  "usbVersion" : "2.0",
+                  "vendorID" : 6092,
+                  "vendorName" : "Native Instruments"
+                },
+                {
+                  "children" : [
+                    {
+                      "locationID" : "0x01114100",
+                      "name" : "Traktor Kontrol S4 MK3",
+                      "productID" : 5920,
+                      "serialNumber" : "2EDF6277",
+                      "speed" : "High Speed (480 Mbps)",
+                      "usbVersion" : "2.0",
+                      "vendorID" : 6092,
+                      "vendorName" : "Native Instruments"
+                    },
+                    {
+                      "children" : [
+                        {
+                          "locationID" : "0x01114210",
+                          "name" : "TRAKTOR X1 MK3",
+                          "productID" : 8704,
+                          "serialNumber" : "2411565B",
+                          "speed" : "Full Speed (12 Mbps)",
+                          "usbVersion" : "2.0",
+                          "vendorID" : 6092,
+                          "vendorName" : "NATIVE INSTRUMENTS"
+                        }
+                      ],
+                      "locationID" : "0x01114200",
+                      "productID" : 8707,
+                      "speed" : "High Speed (480 Mbps)",
+                      "usbVersion" : "2.0",
+                      "vendorID" : 6092,
+                      "vendorName" : "Native Instruments GmbH"
+                    }
+                  ],
+                  "locationID" : "0x01114000",
+                  "name" : "Traktor Kontrol S4 MK3 Hub",
+                  "productID" : 5923,
+                  "serialNumber" : "2EDF6277",
+                  "speed" : "High Speed (480 Mbps)",
+                  "usbVersion" : "2.0",
+                  "vendorID" : 6092,
+                  "vendorName" : "Native Instruments"
+                },
+                {
+                  "locationID" : "0x01118000",
+                  "name" : "Element Hub",
+                  "productID" : 53,
+                  "serialNumber" : "11AD1D855AFB300936060B00",
+                  "speed" : "Full Speed (12 Mbps)",
+                  "usbVersion" : "2.0.1",
+                  "vendorID" : 8584,
+                  "vendorName" : "CalDigit, Inc."
+                }
+              ],
+              "locationID" : "0x01110000",
+              "name" : "USB2.0 Hub",
+              "productID" : 49,
+              "speed" : "High Speed (480 Mbps)",
+              "usbVersion" : "2.1",
+              "vendorID" : 8584,
+              "vendorName" : "CalDigit, Inc."
+            },
+            {
+              "locationID" : "0x01140000",
+              "name" : "TouchScreen",
+              "productID" : 2137,
+              "serialNumber" : "9LQ0172005164",
+              "speed" : "Full Speed (12 Mbps)",
+              "usbVersion" : "1.1",
+              "vendorID" : 10176,
+              "vendorName" : "wch.cn"
+            }
+          ],
+          "locationID" : "0x01100000",
+          "name" : "Element USB 2.0 Hub",
+          "productID" : 52,
+          "speed" : "High Speed (480 Mbps)",
+          "usbVersion" : "2.1",
+          "vendorID" : 8584,
+          "vendorName" : "CalDigit, Inc."
+        },
+        {
+          "children" : [
+            {
+              "locationID" : "0x01240000",
+              "name" : "USB3.0 Hub",
+              "productID" : 50,
+              "speed" : "Super Speed+ (10 Gbps)",
+              "usbVersion" : "3.2",
+              "vendorID" : 8584,
+              "vendorName" : "CalDigit, Inc."
+            }
+          ],
+          "locationID" : "0x01200000",
+          "name" : "USB3.0 Hub",
+          "productID" : 2880,
+          "speed" : "Super Speed+ (10 Gbps)",
+          "usbVersion" : "3.2",
+          "vendorID" : 32903,
+          "vendorName" : "Intel Corporation."
+        }
+      ],
+      "displays" : [
+        {
+          "bottleneck" : "belowMonitorMax",
+          "cableAssessment" : "unlikelyTheCable",
+          "crossCheck" : {
+            "statementContradiction" : false,
+            "usableGbpsMax" : 4.32,
+            "usableGbpsMin" : 4.21875
+          },
+          "currentMode" : {
+            "height" : 720,
+            "pixelClockHz" : 93240000,
+            "refreshHz" : 60,
+            "width" : 1920
+          },
+          "deliveredGbps" : 4.32,
+          "detail" : "macOS lists your 12.3FHD's top mode (up to 60Hz) as available on this link, uncompressed. The mode selected in Display settings, or this Mac's choice for this display, is what is holding the picture below it, not the cable or adapter. macOS states the current mode, 1920 x 720 @ 60Hz, is running uncompressed. The link is carrying about 4.3 Gbps (2 of 4 lanes).",
+          "drivenTiming" : {
+            "colourModes" : [
+              {
+                "depth" : 8,
+                "encoding" : 0,
+                "encodingName" : "RGB 4:4:4",
+                "id" : 1,
+                "isVirtual" : true,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 0,
+                "encodingName" : "RGB 4:4:4",
+                "id" : 79,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 2,
+                "encodingName" : "YCbCr 4:2:2",
+                "id" : 81,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 2,
+                "encodingName" : "YCbCr 4:2:2",
+                "id" : 82,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 3,
+                "encodingName" : "YCbCr 4:4:4",
+                "id" : 84,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 3,
+                "encodingName" : "YCbCr 4:4:4",
+                "id" : 83,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 10,
+                "encoding" : 0,
+                "encodingName" : "RGB 4:4:4",
+                "id" : 85,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 10,
+                "encoding" : 2,
+                "encodingName" : "YCbCr 4:2:2",
+                "id" : 87,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 10,
+                "encoding" : 2,
+                "encodingName" : "YCbCr 4:2:2",
+                "id" : 88,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 12,
+                "encoding" : 2,
+                "encodingName" : "YCbCr 4:2:2",
+                "id" : 6,
+                "isVirtual" : true,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 12,
+                "encoding" : 6,
+                "encodingName" : "YCbCr 4:2:2 (DP tunneling)",
+                "id" : 7,
+                "isVirtual" : true,
+                "supportsDSC" : 0
+              }
+            ],
+            "colourModesComplete" : true,
+            "downstream420" : "none",
+            "dscCapableIDs" : [
+
+            ],
+            "dscListComplete" : true,
+            "dscReading" : "uncompressed",
+            "dscRequiredIDs" : [
+
+            ],
+            "dscRequiredIDsRaw" : [
+
+            ],
+            "unsafeIDs" : [
+
+            ],
+            "unsafeIDsRaw" : [
+
+            ],
+            "unsafeListComplete" : true,
+            "validPixelEncodings" : 7037
+          },
+          "edid" : {
+            "blocks" : [
+              {
+                "checksumValid" : true,
+                "index" : 0,
+                "kind" : "base"
+              },
+              {
+                "checksumValid" : true,
+                "index" : 1,
+                "kind" : "cta861"
+              }
+            ],
+            "continuousFrequency" : false,
+            "declaredExtensionCount" : 1,
+            "modes" : [
+              {
+                "hTotal" : 900,
+                "height" : 400,
+                "interlaced" : false,
+                "pixelClockHz" : 28320000,
+                "refreshHz" : 70.08166295471418,
+                "source" : "established timing (legacy)",
+                "vTotal" : 449,
+                "width" : 720
+              },
+              {
+                "hTotal" : 800,
+                "height" : 480,
+                "interlaced" : false,
+                "pixelClockHz" : 25175000,
+                "refreshHz" : 59.94047619047619,
+                "source" : "established timing (DMT 0x4)",
+                "vTotal" : 525,
+                "width" : 640
+              },
+              {
+                "hTotal" : 864,
+                "height" : 480,
+                "interlaced" : false,
+                "pixelClockHz" : 30240000,
+                "refreshHz" : 66.66666666666667,
+                "source" : "established timing (legacy)",
+                "vTotal" : 525,
+                "width" : 640
+              },
+              {
+                "hTotal" : 1024,
+                "height" : 600,
+                "interlaced" : false,
+                "pixelClockHz" : 36000000,
+                "refreshHz" : 56.25,
+                "source" : "established timing (DMT 0x8)",
+                "vTotal" : 625,
+                "width" : 800
+              },
+              {
+                "hTotal" : 1056,
+                "height" : 600,
+                "interlaced" : false,
+                "pixelClockHz" : 40000000,
+                "refreshHz" : 60.31654120826095,
+                "source" : "established timing (DMT 0x9)",
+                "vTotal" : 628,
+                "width" : 800
+              },
+              {
+                "hTotal" : 1344,
+                "height" : 768,
+                "interlaced" : false,
+                "pixelClockHz" : 65000000,
+                "refreshHz" : 60.00384024577573,
+                "source" : "established timing (DMT 0x10)",
+                "vTotal" : 806,
+                "width" : 1024
+              },
+              {
+                "hTotal" : 1328,
+                "height" : 768,
+                "interlaced" : false,
+                "pixelClockHz" : 75000000,
+                "refreshHz" : 70.06935932314867,
+                "source" : "established timing (DMT 0x11)",
+                "vTotal" : 806,
+                "width" : 1024
+              },
+              {
+                "hTotal" : 2100,
+                "height" : 720,
+                "interlaced" : false,
+                "pixelClockHz" : 93240000,
+                "refreshHz" : 60,
+                "source" : "detailed timing 1 (block 0)",
+                "vTotal" : 740,
+                "width" : 1920
+              },
+              {
+                "hTotal" : 800,
+                "height" : 480,
+                "interlaced" : false,
+                "pixelClockHz" : 25175000,
+                "refreshHz" : 59.94047619047619,
+                "source" : "CTA VIC 1 (block 1)",
+                "vTotal" : 525,
+                "width" : 640
+              },
+              {
+                "hTotal" : 858,
+                "height" : 480,
+                "interlaced" : false,
+                "pixelClockHz" : 27000000,
+                "refreshHz" : 59.94005994005994,
+                "source" : "CTA VIC 2 (block 1)",
+                "vTotal" : 525,
+                "width" : 720
+              },
+              {
+                "hTotal" : 858,
+                "height" : 480,
+                "interlaced" : false,
+                "pixelClockHz" : 27000000,
+                "refreshHz" : 59.94005994005994,
+                "source" : "CTA VIC 3 (block 1)",
+                "vTotal" : 525,
+                "width" : 720
+              },
+              {
+                "hTotal" : 1650,
+                "height" : 720,
+                "interlaced" : false,
+                "pixelClockHz" : 74250000,
+                "refreshHz" : 60,
+                "source" : "CTA VIC 4 (block 1)",
+                "vTotal" : 750,
+                "width" : 1280
+              },
+              {
+                "hTotal" : 2200,
+                "height" : 1080,
+                "interlaced" : true,
+                "pixelClockHz" : 74250000,
+                "refreshHz" : 60,
+                "source" : "CTA VIC 5 (block 1)",
+                "vTotal" : 1125,
+                "width" : 1920
+              },
+              {
+                "hTotal" : 2200,
+                "height" : 1080,
+                "interlaced" : false,
+                "pixelClockHz" : 148500000,
+                "refreshHz" : 60,
+                "source" : "CTA VIC 16 (block 1)",
+                "vTotal" : 1125,
+                "width" : 1920
+              },
+              {
+                "hTotal" : 2100,
+                "height" : 720,
+                "interlaced" : false,
+                "pixelClockHz" : 93240000,
+                "refreshHz" : 60,
+                "source" : "detailed timing 1 (block 1)",
+                "vTotal" : 740,
+                "width" : 1920
+              }
+            ],
+            "monitorName" : "12.3FHD",
+            "preferredMode" : {
+              "hTotal" : 2100,
+              "height" : 720,
+              "interlaced" : false,
+              "pixelClockHz" : 93240000,
+              "refreshHz" : 60,
+              "source" : "detailed timing 1 (block 0)",
+              "vTotal" : 740,
+              "width" : 1920
+            },
+            "rangeLimits" : {
+              "maxHorizontalKHz" : 83,
+              "maxPixelClockHz" : 170000000,
+              "maxVerticalHz" : 75,
+              "minHorizontalKHz" : 30,
+              "minVerticalHz" : 56,
+              "timingSupport" : "defaultGTF"
+            },
+            "undecodedStandardTimings" : [
+
+            ],
+            "version" : "1.4"
+          },
+          "isAppleDisplay" : false,
+          "isWarning" : true,
+          "lanes" : 2,
+          "maxLanes" : 4,
+          "monitorName" : "12.3FHD",
+          "neededGbps" : 3.564,
+          "rate" : "2.7 Gbps (HBR)",
+          "summary" : "Monitor can do more than it is set to",
+          "topMode" : {
+            "height" : 1080,
+            "pixelClockHz" : 148500000,
+            "refreshHz" : 60,
+            "source" : "CTA VIC 16 (block 1)",
+            "width" : 1920
+          },
+          "topModeOnLink" : {
+            "availability" : "offeredUncompressed",
+            "match" : "exact",
+            "statementOffersTopMode" : true,
+            "timing" : {
+              "height" : 1080,
+              "id" : 75,
+              "interlaced" : false,
+              "lists" : {
+                "colourModes" : [
+                  {
+                    "depth" : 8,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 1,
+                    "isVirtual" : true,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 2,
+                    "isVirtual" : true,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 79,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 80,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 2,
+                    "encodingName" : "YCbCr 4:2:2",
+                    "id" : 81,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 2,
+                    "encodingName" : "YCbCr 4:2:2",
+                    "id" : 82,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 3,
+                    "encodingName" : "YCbCr 4:4:4",
+                    "id" : 84,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 3,
+                    "encodingName" : "YCbCr 4:4:4",
+                    "id" : 83,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 10,
+                    "encoding" : 2,
+                    "encodingName" : "YCbCr 4:2:2",
+                    "id" : 87,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 10,
+                    "encoding" : 2,
+                    "encodingName" : "YCbCr 4:2:2",
+                    "id" : 88,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 12,
+                    "encoding" : 2,
+                    "encodingName" : "YCbCr 4:2:2",
+                    "id" : 6,
+                    "isVirtual" : true,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 12,
+                    "encoding" : 6,
+                    "encodingName" : "YCbCr 4:2:2 (DP tunneling)",
+                    "id" : 7,
+                    "isVirtual" : true,
+                    "supportsDSC" : 0
+                  }
+                ],
+                "colourModesComplete" : true,
+                "downstream420" : "none",
+                "dscCapableIDs" : [
+
+                ],
+                "dscListComplete" : true,
+                "dscReading" : "uncompressed",
+                "dscRequiredIDs" : [
+
+                ],
+                "dscRequiredIDsRaw" : [
+
+                ],
+                "unsafeIDs" : [
+
+                ],
+                "unsafeIDsRaw" : [
+
+                ],
+                "unsafeListComplete" : true,
+                "validPixelEncodings" : 7037
+              },
+              "pixelClockHz" : 148500000,
+              "refreshHz" : 60,
+              "width" : 1920
+            },
+            "topModeListedByNode" : true
+          }
+        },
+        {
+          "bottleneck" : "fine",
+          "cableAssessment" : "unlikelyTheCable",
+          "crossCheck" : {
+            "statementContradiction" : false,
+            "usableGbpsMax" : 8.64,
+            "usableGbpsMin" : 8.4375
+          },
+          "currentMode" : {
+            "bitsPerComponent" : 8,
+            "height" : 1080,
+            "pixelClockHz" : 148500000,
+            "refreshHz" : 60,
+            "width" : 1920
+          },
+          "deliveredGbps" : 8.64,
+          "detail" : "macOS reports your ingnok at its top mode (1920 x 1080 @ 60Hz) and states it is running uncompressed. The link is carrying it in full; nothing is holding the picture back.",
+          "drivenTiming" : {
+            "colourModes" : [
+              {
+                "depth" : 8,
+                "encoding" : 0,
+                "encodingName" : "RGB 4:4:4",
+                "id" : 58,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 0,
+                "encodingName" : "RGB 4:4:4",
+                "id" : 59,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 2,
+                "encodingName" : "YCbCr 4:2:2",
+                "id" : 60,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 2,
+                "encodingName" : "YCbCr 4:2:2",
+                "id" : 61,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 3,
+                "encodingName" : "YCbCr 4:4:4",
+                "id" : 63,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 8,
+                "encoding" : 3,
+                "encodingName" : "YCbCr 4:4:4",
+                "id" : 62,
+                "isVirtual" : false,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 12,
+                "encoding" : 2,
+                "encodingName" : "YCbCr 4:2:2",
+                "id" : 6,
+                "isVirtual" : true,
+                "supportsDSC" : 0
+              },
+              {
+                "depth" : 12,
+                "encoding" : 6,
+                "encodingName" : "YCbCr 4:2:2 (DP tunneling)",
+                "id" : 7,
+                "isVirtual" : true,
+                "supportsDSC" : 0
+              }
+            ],
+            "colourModesComplete" : true,
+            "downstream420" : "none",
+            "dscCapableIDs" : [
+
+            ],
+            "dscListComplete" : true,
+            "dscReading" : "uncompressed",
+            "dscRequiredIDs" : [
+
+            ],
+            "dscRequiredIDsRaw" : [
+
+            ],
+            "unsafeIDs" : [
+
+            ],
+            "unsafeIDsRaw" : [
+
+            ],
+            "unsafeListComplete" : true,
+            "validPixelEncodings" : 7037
+          },
+          "edid" : {
+            "blocks" : [
+              {
+                "checksumValid" : true,
+                "index" : 0,
+                "kind" : "base"
+              },
+              {
+                "checksumValid" : true,
+                "index" : 1,
+                "kind" : "cta861"
+              }
+            ],
+            "continuousFrequency" : true,
+            "declaredExtensionCount" : 1,
+            "modes" : [
+              {
+                "hTotal" : 800,
+                "height" : 480,
+                "interlaced" : false,
+                "pixelClockHz" : 25175000,
+                "refreshHz" : 59.94047619047619,
+                "source" : "established timing (DMT 0x4)",
+                "vTotal" : 525,
+                "width" : 640
+              },
+              {
+                "hTotal" : 1056,
+                "height" : 600,
+                "interlaced" : false,
+                "pixelClockHz" : 40000000,
+                "refreshHz" : 60.31654120826095,
+                "source" : "established timing (DMT 0x9)",
+                "vTotal" : 628,
+                "width" : 800
+              },
+              {
+                "hTotal" : 1344,
+                "height" : 768,
+                "interlaced" : false,
+                "pixelClockHz" : 65000000,
+                "refreshHz" : 60.00384024577573,
+                "source" : "established timing (DMT 0x10)",
+                "vTotal" : 806,
+                "width" : 1024
+              },
+              {
+                "hTotal" : 2080,
+                "height" : 1080,
+                "interlaced" : false,
+                "pixelClockHz" : 140400000,
+                "refreshHz" : 60,
+                "source" : "detailed timing 1 (block 0)",
+                "vTotal" : 1125,
+                "width" : 1920
+              },
+              {
+                "hTotal" : 2200,
+                "height" : 1080,
+                "interlaced" : false,
+                "pixelClockHz" : 148500000,
+                "refreshHz" : 60,
+                "source" : "CTA VIC 16 (block 1)",
+                "vTotal" : 1125,
+                "width" : 1920
+              },
+              {
+                "hTotal" : 1650,
+                "height" : 720,
+                "interlaced" : false,
+                "pixelClockHz" : 74250000,
+                "refreshHz" : 60,
+                "source" : "CTA VIC 4 (block 1)",
+                "vTotal" : 750,
+                "width" : 1280
+              },
+              {
+                "hTotal" : 858,
+                "height" : 480,
+                "interlaced" : false,
+                "pixelClockHz" : 27000000,
+                "refreshHz" : 59.94005994005994,
+                "source" : "CTA VIC 3 (block 1)",
+                "vTotal" : 525,
+                "width" : 720
+              },
+              {
+                "hTotal" : 2200,
+                "height" : 1080,
+                "interlaced" : false,
+                "pixelClockHz" : 148500000,
+                "refreshHz" : 60,
+                "source" : "detailed timing 1 (block 1)",
+                "vTotal" : 1125,
+                "width" : 1920
+              }
+            ],
+            "monitorName" : "ingnok",
+            "preferredMode" : {
+              "hTotal" : 2080,
+              "height" : 1080,
+              "interlaced" : false,
+              "pixelClockHz" : 140400000,
+              "refreshHz" : 60,
+              "source" : "detailed timing 1 (block 0)",
+              "vTotal" : 1125,
+              "width" : 1920
+            },
+            "undecodedStandardTimings" : [
+
+            ],
+            "version" : "1.4"
+          },
+          "isAppleDisplay" : false,
+          "isWarning" : false,
+          "lanes" : 4,
+          "maxLanes" : 4,
+          "monitorName" : "ingnok",
+          "neededGbps" : 3.564,
+          "rate" : "2.7 Gbps (HBR)",
+          "summary" : "Display running at full quality",
+          "topMode" : {
+            "height" : 1080,
+            "pixelClockHz" : 148500000,
+            "refreshHz" : 60,
+            "source" : "CTA VIC 16 (block 1)",
+            "width" : 1920
+          },
+          "topModeOnLink" : {
+            "availability" : "offeredUncompressed",
+            "match" : "exact",
+            "statementOffersTopMode" : true,
+            "timing" : {
+              "height" : 1080,
+              "id" : 51,
+              "interlaced" : false,
+              "lists" : {
+                "colourModes" : [
+                  {
+                    "depth" : 8,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 58,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 0,
+                    "encodingName" : "RGB 4:4:4",
+                    "id" : 59,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 2,
+                    "encodingName" : "YCbCr 4:2:2",
+                    "id" : 60,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 2,
+                    "encodingName" : "YCbCr 4:2:2",
+                    "id" : 61,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 3,
+                    "encodingName" : "YCbCr 4:4:4",
+                    "id" : 63,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 8,
+                    "encoding" : 3,
+                    "encodingName" : "YCbCr 4:4:4",
+                    "id" : 62,
+                    "isVirtual" : false,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 12,
+                    "encoding" : 2,
+                    "encodingName" : "YCbCr 4:2:2",
+                    "id" : 6,
+                    "isVirtual" : true,
+                    "supportsDSC" : 0
+                  },
+                  {
+                    "depth" : 12,
+                    "encoding" : 6,
+                    "encodingName" : "YCbCr 4:2:2 (DP tunneling)",
+                    "id" : 7,
+                    "isVirtual" : true,
+                    "supportsDSC" : 0
+                  }
+                ],
+                "colourModesComplete" : true,
+                "downstream420" : "none",
+                "dscCapableIDs" : [
+
+                ],
+                "dscListComplete" : true,
+                "dscReading" : "uncompressed",
+                "dscRequiredIDs" : [
+
+                ],
+                "dscRequiredIDsRaw" : [
+
+                ],
+                "unsafeIDs" : [
+
+                ],
+                "unsafeIDsRaw" : [
+
+                ],
+                "unsafeListComplete" : true,
+                "validPixelEncodings" : 7037
+              },
+              "pixelClockHz" : 148500000,
+              "refreshHz" : 60,
+              "width" : 1920
+            },
+            "topModeListedByNode" : true
+          }
+        }
+      ],
+      "headline" : "Thunderbolt \/ USB4",
+      "name" : "Port-USB-C@2",
+      "pdCapable" : true,
+      "powerSources" : [
+
+      ],
+      "status" : "thunderboltCable",
+      "subtitle" : "Supports high-speed data, smart cable.",
+      "thunderboltSwitchIndex" : 1,
+      "transports" : {
+        "active" : [
+          "CC",
+          "USB2",
+          "CIO"
+        ],
+        "provisioned" : [
+          "CC",
+          "USB2",
+          "CIO"
+        ],
+        "supported" : [
+          "CC",
+          "USB2",
+          "USB3",
+          "CIO",
+          "DisplayPort"
+        ]
+      },
+      "trust" : {
+        "confirmedBy" : [
+          "data"
+        ],
+        "contradiction" : false,
+        "tier" : "green"
+      },
+      "type" : "USB-C"
+    },
+    {
+      "billboardDevicePresent" : false,
+      "bulletGroups" : [
+        {
+          "header" : "What the cable's e-marker reports",
+          "lines" : [
+
+          ],
+          "source" : "emarker",
+          "state" : "No e-marker read. The cable may have one; macOS usually reads it above 3A or over Thunderbolt."
+        },
+        {
+          "header" : "What your Mac measured",
+          "lines" : [
+            "USB 3.2 Gen 2 (10 Gbps)"
+          ],
+          "source" : "measured"
+        }
+      ],
+      "bullets" : [
+        "No e-marker read. The cable may have one; macOS usually reads it above 3A or over Thunderbolt.",
+        "USB 3.2 Gen 2 (10 Gbps)"
+      ],
+      "className" : "AppleHPMInterfaceType10",
+      "connectionActive" : true,
+      "dataLink" : {
+        "bottleneck" : "deviceLimit",
+        "cableSignalConflict" : false,
+        "detail" : "This is the fastest the connected device supports. It is not a cable problem.",
+        "isWarning" : false,
+        "summary" : "Device runs at 10 Gbps"
+      },
+      "devices" : [
+        {
+          "locationID" : "0x03200000",
+          "name" : "USB 10_100_1G_2_5G_5G LAN",
+          "productID" : 33111,
+          "serialNumber" : "0003000001",
+          "speed" : "Super Speed+ (10 Gbps)",
+          "usbVersion" : "3.2",
+          "vendorID" : 3034,
+          "vendorName" : "Realtek"
+        }
+      ],
+      "headline" : "USB device",
+      "name" : "Port-USB-C@4",
+      "pdCapable" : true,
+      "powerSources" : [
+
+      ],
+      "status" : "dataDevice",
+      "subtitle" : "SuperSpeed data link is active.",
+      "thunderboltSwitchIndex" : 2,
+      "transports" : {
+        "active" : [
+          "CC",
+          "USB3"
+        ],
+        "provisioned" : [
+          "CC",
+          "USB3",
+          "USB2"
+        ],
+        "supported" : [
+          "CC",
+          "USB2",
+          "USB3",
+          "CIO",
+          "DisplayPort"
+        ],
+        "usb3Speed" : "USB 3.2 Gen 2 (10 Gbps)"
+      },
+      "type" : "USB-C"
+    },
+    {
+      "billboardDevicePresent" : false,
+      "bulletGroups" : [
+        {
+          "header" : "What the cable's e-marker reports",
+          "lines" : [
+
+          ],
+          "source" : "emarker",
+          "state" : "This port can't read cable details: USB-only, no Power Delivery. Plug the cable into a Thunderbolt port to see its details."
+        },
+        {
+          "header" : "What your Mac measured",
+          "lines" : [
+            "USB 2.0 only (480 Mbps), no high-speed data"
+          ],
+          "source" : "measured"
+        }
+      ],
+      "bullets" : [
+        "This port can't read cable details: USB-only, no Power Delivery. Plug the cable into a Thunderbolt port to see its details.",
+        "USB 2.0 only (480 Mbps), no high-speed data"
+      ],
+      "className" : "IOPort",
+      "connectionActive" : true,
+      "devices" : [
+        {
+          "locationID" : "0x02110000",
+          "name" : "P9227 Slim",
+          "productID" : 4240,
+          "serialNumber" : "0000NL37FBAT",
+          "speed" : "High Speed (480 Mbps)",
+          "usbVersion" : "2.1",
+          "vendorID" : 1439,
+          "vendorName" : "LaCie"
+        }
+      ],
+      "headline" : "Slow USB device or charge-only cable",
+      "name" : "Port-USB-C@5",
+      "pdCapable" : false,
+      "powerSources" : [
+
+      ],
+      "status" : "dataDevice",
+      "subtitle" : "Only USB 2.0 is active. If you expected high speed, the cable may not support it.",
+      "transports" : {
+        "active" : [
+          "USB2"
+        ],
+        "provisioned" : [
+          "USB2",
+          "USB3"
+        ],
+        "supported" : [
+          "USB2",
+          "USB3"
+        ]
+      },
+      "type" : "USB-C"
+    },
+    {
+      "billboardDevicePresent" : false,
+      "bulletGroups" : [
+
+      ],
+      "bullets" : [
+
+      ],
+      "className" : "IOPort",
+      "connectionActive" : false,
+      "headline" : "Nothing connected",
+      "name" : "Port-USB-C@6",
+      "pdCapable" : false,
+      "powerSources" : [
+
+      ],
+      "status" : "empty",
+      "subtitle" : "Plug a cable into Port-USB-C@6 to see what it can do.",
+      "transports" : {
+        "active" : [
+
+        ],
+        "provisioned" : [
+          "USB2",
+          "USB3"
+        ],
+        "supported" : [
+          "USB2",
+          "USB3"
+        ]
+      },
+      "type" : "USB-C"
+    }
+  ],
+  "thunderboltSwitches" : [
+    {
+      "className" : "IOThunderboltSwitchType5",
+      "depth" : 0,
+      "index" : 0,
+      "maxPortNumber" : 8,
+      "modelName" : "iOS",
+      "ports" : [
+        {
+          "adapterType" : "lane",
+          "generation" : "tb3",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 100,
+          "perLaneGbps" : 10,
+          "portNumber" : 1,
+          "rawSpeedCode" : 8,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 1,
+          "rxGbps" : 10,
+          "rxLanes" : 1,
+          "socketID" : "1",
+          "txGbps" : 10,
+          "txLanes" : 1
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "tb3",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 100,
+          "perLaneGbps" : 10,
+          "portNumber" : 2,
+          "rawSpeedCode" : 8,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 1,
+          "rxGbps" : 10,
+          "rxLanes" : 1,
+          "socketID" : "1",
+          "txGbps" : 10,
+          "txLanes" : 1
+        },
+        {
+          "adapterType" : "pcieDown",
+          "linkActive" : false,
+          "portNumber" : 3
+        },
+        {
+          "adapterType" : "usb3Down",
+          "linkActive" : false,
+          "portNumber" : 4
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "portNumber" : 5
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "portNumber" : 6
+        },
+        {
+          "adapterType" : "inactive",
+          "linkActive" : false,
+          "portNumber" : 8
+        }
+      ],
+      "routeString" : 0,
+      "routerID" : 0,
+      "supportedSpeedMask" : 12,
+      "upstreamPortNumber" : 7,
+      "vendorID" : 1452,
+      "vendorName" : "Apple Inc."
+    },
+    {
+      "className" : "IOThunderboltSwitchType5",
+      "depth" : 0,
+      "index" : 1,
+      "maxPortNumber" : 8,
+      "modelName" : "iOS",
+      "ports" : [
+        {
+          "adapterType" : "lane",
+          "generation" : "usb4Tb4",
+          "linkActive" : true,
+          "linkBandwidthRaw" : 400,
+          "linkLabel" : "Up to 20 Gb\/s × 2",
+          "perLaneGbps" : 20,
+          "portNumber" : 1,
+          "rawSpeedCode" : 4,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 2,
+          "rxGbps" : 40,
+          "rxLanes" : 2,
+          "socketID" : "2",
+          "txGbps" : 40,
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "usb4Tb4",
+          "linkActive" : true,
+          "linkBandwidthRaw" : 0,
+          "linkLabel" : "Up to 20 Gb\/s × 2",
+          "perLaneGbps" : 20,
+          "portNumber" : 2,
+          "rawSpeedCode" : 4,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 2,
+          "rxGbps" : 40,
+          "rxLanes" : 2,
+          "socketID" : "2",
+          "txGbps" : 40,
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "pcieDown",
+          "linkActive" : false,
+          "portNumber" : 3
+        },
+        {
+          "adapterType" : "usb3Down",
+          "linkActive" : false,
+          "portNumber" : 4
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "portNumber" : 5
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "portNumber" : 6
+        },
+        {
+          "adapterType" : "inactive",
+          "linkActive" : false,
+          "portNumber" : 8
+        }
+      ],
+      "routeString" : 0,
+      "routerID" : 1,
+      "supportedSpeedMask" : 12,
+      "upstreamPortNumber" : 7,
+      "vendorID" : 1452,
+      "vendorName" : "Apple Inc."
+    },
+    {
+      "className" : "IOThunderboltSwitchType5",
+      "depth" : 0,
+      "index" : 2,
+      "maxPortNumber" : 7,
+      "modelName" : "iOS",
+      "ports" : [
+        {
+          "adapterType" : "lane",
+          "generation" : "tb3",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 100,
+          "perLaneGbps" : 10,
+          "portNumber" : 1,
+          "rawSpeedCode" : 8,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 1,
+          "rxGbps" : 10,
+          "rxLanes" : 1,
+          "socketID" : "4",
+          "txGbps" : 10,
+          "txLanes" : 1
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "tb3",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 100,
+          "perLaneGbps" : 10,
+          "portNumber" : 2,
+          "rawSpeedCode" : 8,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 1,
+          "rxGbps" : 10,
+          "rxLanes" : 1,
+          "socketID" : "4",
+          "txGbps" : 10,
+          "txLanes" : 1
+        },
+        {
+          "adapterType" : "pcieDown",
+          "linkActive" : false,
+          "portNumber" : 3
+        },
+        {
+          "adapterType" : "usb3Down",
+          "linkActive" : false,
+          "portNumber" : 4
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "portNumber" : 5
+        },
+        {
+          "adapterType" : "dpIn",
+          "linkActive" : false,
+          "portNumber" : 6
+        }
+      ],
+      "routeString" : 0,
+      "routerID" : 3,
+      "supportedSpeedMask" : 12,
+      "upstreamPortNumber" : 7,
+      "vendorID" : 1452,
+      "vendorName" : "Apple Inc."
+    },
+    {
+      "className" : "IOThunderboltSwitchIntelJHL8440",
+      "depth" : 1,
+      "index" : 3,
+      "maxPortNumber" : 19,
+      "modelName" : "Element Hub",
+      "parentSwitchIndex" : 1,
+      "ports" : [
+        {
+          "adapterType" : "lane",
+          "generation" : "usb4Tb4",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 0,
+          "perLaneGbps" : 20,
+          "portNumber" : 2,
+          "rawSpeedCode" : 4,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 2,
+          "rxGbps" : 40,
+          "rxLanes" : 2,
+          "txGbps" : 40,
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "tb3",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 100,
+          "perLaneGbps" : 10,
+          "portNumber" : 3,
+          "rawSpeedCode" : 8,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 1,
+          "rxGbps" : 10,
+          "rxLanes" : 1,
+          "txGbps" : 10,
+          "txLanes" : 1
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "tb3",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 100,
+          "perLaneGbps" : 10,
+          "portNumber" : 4,
+          "rawSpeedCode" : 8,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 1,
+          "rxGbps" : 10,
+          "rxLanes" : 1,
+          "txGbps" : 10,
+          "txLanes" : 1
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "usb4Tb4",
+          "linkActive" : true,
+          "linkBandwidthRaw" : 400,
+          "linkLabel" : "Up to 20 Gb\/s × 2",
+          "perLaneGbps" : 20,
+          "portNumber" : 5,
+          "rawSpeedCode" : 4,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 2,
+          "rxGbps" : 40,
+          "rxLanes" : 2,
+          "txGbps" : 40,
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "usb4Tb4",
+          "linkActive" : true,
+          "linkBandwidthRaw" : 0,
+          "linkLabel" : "Up to 20 Gb\/s × 2",
+          "perLaneGbps" : 20,
+          "portNumber" : 6,
+          "rawSpeedCode" : 4,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 2,
+          "rxGbps" : 40,
+          "rxLanes" : 2,
+          "txGbps" : 40,
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "tb3",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 100,
+          "perLaneGbps" : 10,
+          "portNumber" : 7,
+          "rawSpeedCode" : 8,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 1,
+          "rxGbps" : 10,
+          "rxLanes" : 1,
+          "txGbps" : 10,
+          "txLanes" : 1
+        },
+        {
+          "adapterType" : "lane",
+          "generation" : "tb3",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 100,
+          "perLaneGbps" : 10,
+          "portNumber" : 8,
+          "rawSpeedCode" : 8,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 1,
+          "rxGbps" : 10,
+          "rxLanes" : 1,
+          "txGbps" : 10,
+          "txLanes" : 1
+        },
+        {
+          "adapterType" : "pcieUp",
+          "linkActive" : false,
+          "portNumber" : 9
+        },
+        {
+          "adapterType" : "pcieDown",
+          "linkActive" : false,
+          "portNumber" : 10
+        },
+        {
+          "adapterType" : "pcieDown",
+          "linkActive" : false,
+          "portNumber" : 11
+        },
+        {
+          "adapterType" : "pcieDown",
+          "linkActive" : false,
+          "portNumber" : 12
+        },
+        {
+          "adapterType" : "dpOut",
+          "linkActive" : false,
+          "portNumber" : 13
+        },
+        {
+          "adapterType" : "dpOut",
+          "linkActive" : false,
+          "portNumber" : 14
+        },
+        {
+          "adapterType" : "inactive",
+          "linkActive" : false,
+          "portNumber" : 15
+        },
+        {
+          "adapterType" : "usb3Up",
+          "linkActive" : false,
+          "portNumber" : 16
+        },
+        {
+          "adapterType" : "usb3Down",
+          "linkActive" : false,
+          "portNumber" : 17
+        },
+        {
+          "adapterType" : "usb3Down",
+          "linkActive" : false,
+          "portNumber" : 18
+        },
+        {
+          "adapterType" : "usb3Down",
+          "linkActive" : false,
+          "portNumber" : 19
+        }
+      ],
+      "routeString" : 1,
+      "routerID" : 0,
+      "supportedSpeedMask" : 12,
+      "upstreamPortNumber" : 1,
+      "vendorID" : 32903,
+      "vendorName" : "CalDigit, Inc."
+    },
+    {
+      "className" : "IOThunderboltSwitchUSB4",
+      "depth" : 2,
+      "index" : 4,
+      "maxPortNumber" : 4,
+      "modelName" : "246x",
+      "parentSwitchIndex" : 3,
+      "ports" : [
+        {
+          "adapterType" : "lane",
+          "generation" : "usb4Tb4",
+          "linkActive" : false,
+          "linkBandwidthRaw" : 0,
+          "perLaneGbps" : 20,
+          "portNumber" : 2,
+          "rawSpeedCode" : 4,
+          "rawTargetSpeed" : 12,
+          "rawWidthCode" : 2,
+          "rxGbps" : 40,
+          "rxLanes" : 2,
+          "txGbps" : 40,
+          "txLanes" : 2
+        },
+        {
+          "adapterType" : "pcieUp",
+          "linkActive" : false,
+          "portNumber" : 3
+        }
+      ],
+      "routeString" : 1281,
+      "routerID" : 0,
+      "supportedSpeedMask" : 12,
+      "upstreamPortNumber" : 1,
+      "vendorID" : 5964,
+      "vendorName" : "ASMedia"
+    }
+  ],
+  "version" : "1.5.0"
+}

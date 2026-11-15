@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   macos:
@@ -52,3 +52,20 @@ jobs:
           name: PortMap-macOS-universal
           path: build/PortMap-*-build*.zip
           if-no-files-found: error
+      - name: Publish tested macOS beta
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' port-map-source/Info.plist)
+          build=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' port-map-source/Info.plist)
+          tag="macos-orbit-v${version}-build${build}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "This app version is already published; keeping its existing assets."
+          else
+            shasum -a 256 "build/PortMap-${version}-build${build}.zip" > "build/PortMap-${version}-build${build}.zip.sha256"
+            gh release create "$tag" "build/PortMap-${version}-build${build}.zip" "build/PortMap-${version}-build${build}.zip.sha256" \
+              --target "$GITHUB_SHA" --prerelease --title "Port Map ${version} — Workspace Orbit beta" \
+              --notes-file MACOS-RELEASE-NOTES.md
+          fi

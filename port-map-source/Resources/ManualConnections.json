@@ -1,0 +1,20 @@
+[
+  {
+    "id": "scarlett-4i4",
+    "title": "Focusrite Scarlett 4i4",
+    "parent": "Traktor Kontrol S4 MK3",
+    "cable": "RCA",
+    "from": "RCA from S4 MK3 rear",
+    "photo": "Scarlett4i4",
+    "icon": "hifispeaker"
+  },
+  {
+    "id": "klipsch-the-fives",
+    "title": "Klipsch The Fives (pair)",
+    "parent": "Focusrite Scarlett 4i4",
+    "cable": "Line out",
+    "from": "From Scarlett 4i4 outputs",
+    "photo": "KlipschFives",
+    "icon": "hifispeaker.2"
+  }
+]

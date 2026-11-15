@@ -167,7 +167,7 @@ private struct SetupDeviceRow: View {
                 showingDetails.toggle()
             } label: {
                 HStack(spacing: 10) {
-                    DeviceArtwork(art: device.art, icon: device.icon)
+                    DeviceArtwork(art: device.art, icon: device.icon, photo: device.photo)
                     VStack(alignment: .leading, spacing: 3) {
                         Text(device.title).font(.callout.weight(.semibold))
                         if let wire = device.wire {
@@ -225,7 +225,9 @@ private struct DeviceDetails: View {
                 Label(wire.label, systemImage: "cable.connector").foregroundStyle(wire.color)
                 Text(wire.explanation).foregroundStyle(.secondary)
             }
-            if device.art != nil {
+            if device.manual {
+                Text("Added by hand in ManualConnections.json").font(.caption).foregroundStyle(.secondary)
+            } else if device.art != nil {
                 Text("Representative device illustration").font(.caption).foregroundStyle(.secondary)
             }
         }
@@ -274,9 +276,19 @@ private struct CablePath: View {
 private struct DeviceArtwork: View {
     let art: DeviceArt?
     let icon: String
+    var photo: String? = nil
 
     var body: some View {
-        if let art, let image = art.image {
+        if let photo, let image = HubPhoto(resource: photo).image {
+            Image(nsImage: image)
+                .resizable()
+                .interpolation(.high)
+                .aspectRatio(contentMode: .fit)
+                .padding(3)
+                .frame(width: 97, height: 62)
+                .background(Color.white, in: RoundedRectangle(cornerRadius: 7))
+                .accessibilityHidden(true)
+        } else if let art, let image = art.image {
             Image(nsImage: image)
                 .resizable()
                 .interpolation(.high)
@@ -412,16 +424,21 @@ private struct SetupDevice: Identifiable {
     var children: [Self]
     /// Where this device plugs into a recognized hub, e.g. "CalDigit USB-A".
     var hubSocket: String? = nil
+    /// Bundled product photo (jpg resource name) used instead of atlas artwork.
+    var photo: String? = nil
+    /// Entered by hand in ManualConnections.json; macOS can't detect it.
+    var manual = false
 
     static func nodes(for port: Port) -> [Self] {
         let nodes = port.connections.map { build($0, port: port) }
         guard let stand = nodes.first(where: { $0.art == .satechi }),
               let companion = nodes.first(where: { $0.art == nil && $0.title == "Satechi USB 2 branch" }) else {
-            return nodes.map { $0.labelingHubPorts() }
+            return nodes.map { $0.labelingHubPorts().addingManualConnections() }
         }
         var dock = stand
         dock.children = [companion] + dock.children
-        return [dock.labelingHubPorts()] + nodes.filter { $0.id != stand.id && $0.id != companion.id }.map { $0.labelingHubPorts() }
+        return ([dock.labelingHubPorts()] + nodes.filter { $0.id != stand.id && $0.id != companion.id }.map { $0.labelingHubPorts() })
+            .map { $0.addingManualConnections() }
     }
 
     private static func build(_ node: Connection, port: Port) -> Self {
@@ -611,6 +628,8 @@ private struct OverviewDevice: Identifiable {
     let category: Int // display, controller, host/stand, other
     var isHub = false
     var hubSocket: String? = nil
+    var photo: String? = nil
+    var manual = false
     var routeTitle: String {
         if art == .nvme, detail?.contains("2TB") == true { return "ASMedia NVMe · 2TB" }
         return title
@@ -678,15 +697,15 @@ private struct OverviewInventory {
             || lowerTitle.contains("branch") || ["unnamed usb device", "usb billboard device"].contains(lowerTitle)
         // Preserve named endpoints even when no model-specific illustration exists.
         let namedEndpoint = node.children.isEmpty && !knownInterface
-        let physical = node.art != nil || isStorageEndpoint || identifiedHub || namedEndpoint
+        let physical = node.art != nil || node.photo != nil || isStorageEndpoint || identifiedHub || namedEndpoint
         var nextParent = parent
         if physical {
-            let category = node.art == .monitor ? 0 : [.s4, .z1, .x1, .twister].contains(node.art) ? 1 : node.art == .satechi ? 2 : 3
+            let category = node.manual ? 4 : node.art == .monitor ? 0 : [.s4, .z1, .x1, .twister].contains(node.art) ? 1 : node.art == .satechi ? 2 : 3
             devices.append(OverviewDevice(id: id, title: node.title, art: node.art ?? (identifiedHub ? .hub : nil),
                                           icon: isStorageEndpoint ? "externaldrive" : node.icon, port: port, path: fullPath,
                                           detail: node.detail, wire: node.wire, parentID: parent,
                                           indirect: indirect || (node.wire?.dashed ?? false), category: category, isHub: identifiedHub,
-                                          hubSocket: node.hubSocket))
+                                          hubSocket: node.hubSocket, photo: node.photo, manual: node.manual))
             nextParent = id
         } else {
             interfaces.append(OverviewInterface(parentID: parent, id: id, title: node.title, path: fullPath, detail: node.detail))
@@ -746,6 +765,21 @@ private struct OverviewLayout {
             }
             nextY += tierHeight + 3
         }
+        // Hand-entered audio gear sits on its own shelf, each device to the right of its source.
+        let audio = items.filter { $0.category == 4 }
+        if !audio.isEmpty {
+            tiers.append((nextY, 150, "AUDIO"))
+            let width: CGFloat = 240
+            var first: CGRect?
+            if let parentID = audio.first?.parentID { first = frames[parentID] }
+            let step = min(290, (1160 - width) / CGFloat(max(1, audio.count - 1)))
+            let span = step * CGFloat(audio.count - 1) + width
+            let startX = min(max(20, (first?.midX ?? 600) + 30 - width / 2), 1180 - span)
+            for (index, device) in audio.enumerated() {
+                frames[device.id] = CGRect(x: startX + step * CGFloat(index), y: nextY + 10, width: width, height: 126)
+            }
+            nextY += 153
+        }
         let others = items.filter { $0.category == 3 }
         let element = others.first { $0.art == .element }
         let nvme = others.first { $0.art == .nvme && $0.parentID == element?.id }
@@ -790,7 +824,19 @@ private enum OverviewRouting {
             var labelPoint: CGPoint?
             var label: String?
             let rate = child.wire?.label.components(separatedBy: " · ").last
-            if parentID == "host" && child.art == .element {
+            if child.category == 4 {
+                label = child.wire?.label
+                if parent.category == 4 {
+                    points = [CGPoint(x: source.maxX, y: source.midY), CGPoint(x: target.minX, y: target.midY)]
+                    labelPoint = CGPoint(x: (source.maxX + target.minX) / 2, y: source.midY)
+                } else {
+                    let startX = source.midX + 30
+                    let laneY = target.minY - 9
+                    points = [CGPoint(x: startX, y: source.maxY), CGPoint(x: startX, y: laneY),
+                              CGPoint(x: target.midX, y: laneY), CGPoint(x: target.midX, y: target.minY)]
+                    labelPoint = CGPoint(x: (startX + target.midX) / 2, y: laneY - 12)
+                }
+            } else if parentID == "host" && child.art == .element {
                 let laneY = min(source.minY, target.minY) - 16
                 points = [CGPoint(x: source.minX, y: source.midY), CGPoint(x: source.minX - 12, y: source.midY),
                           CGPoint(x: source.minX - 12, y: laneY), CGPoint(x: target.midX, y: laneY), CGPoint(x: target.midX, y: target.minY)]
@@ -896,7 +942,15 @@ private struct OverviewCard: View {
         .buttonStyle(.plain)
         .help("Trace \(device.title) · \(device.subtitle)")
         .overlay(alignment: .topLeading) {
-            if let port = device.port { MacSideBadge(port: port).padding(8) }
+            if device.manual {
+                Text("BY HAND").font(.system(size: 9, weight: .heavy)).tracking(0.4).foregroundStyle(.white)
+                    .padding(.horizontal, 6).padding(.vertical, 2.5)
+                    .background(Color.gray, in: Capsule()).padding(8)
+                    .help("Added by hand; macOS can't detect this connection")
+                    .accessibilityHidden(true)
+            } else if let port = device.port {
+                MacSideBadge(port: port).padding(8)
+            }
         }
         .overlay(alignment: .topTrailing) {
             Button { showDetails = true } label: {
@@ -913,7 +967,7 @@ private struct OverviewCard: View {
     }
 
     @ViewBuilder private var artwork: some View {
-        if device.art == .element, let photo = HubPhoto(resource: "CalDigitHero").image {
+        if let name = device.photo ?? (device.art == .element ? "CalDigitHero" : nil), let photo = HubPhoto(resource: name).image {
             Image(nsImage: photo).resizable().interpolation(.high).aspectRatio(contentMode: .fit)
                 .padding(4)
                 .background(Color.white, in: RoundedRectangle(cornerRadius: 8))
@@ -1755,5 +1809,47 @@ private struct PowerLabelStyle: LabelStyle {
         }
         .foregroundStyle(.orange)
         .fixedSize()
+    }
+}
+
+
+// MARK: - Hand-entered connections
+
+/// Connections macOS can't see, such as analog audio. Listed in Resources/ManualConnections.json:
+/// each entry hangs off the device whose title equals `parent` (a detected device or another entry).
+private struct ManualConnection: Decodable {
+    let id: String
+    let title: String
+    let parent: String
+    let cable: String
+    let from: String?
+    let photo: String?
+    let icon: String?
+
+    static let all: [Self] = {
+        guard let url = Bundle.main.url(forResource: "ManualConnections", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let list = try? JSONDecoder().decode([Self].self, from: data) else { return [] }
+        return list
+    }()
+
+    func device(depth: Int) -> SetupDevice {
+        let wire = SetupWire(label: cable,
+                             explanation: "Analog audio cable, added by hand. macOS can't detect it, so it isn't verified.",
+                             color: .orange)
+        let children = depth < 6 ? Self.all.filter { $0.parent == title && $0.id != id }.map { $0.device(depth: depth + 1) } : []
+        return SetupDevice(id: "manual-\(id)", title: title, detail: "Added by hand · not detected by macOS",
+                           art: nil, icon: icon ?? "hifispeaker", wire: wire, children: children,
+                           hubSocket: from, photo: photo, manual: true)
+    }
+}
+
+private extension SetupDevice {
+    func addingManualConnections() -> Self {
+        guard !manual, !ManualConnection.all.isEmpty else { return self }
+        var copy = self
+        copy.children = children.map { $0.addingManualConnections() }
+            + ManualConnection.all.filter { $0.parent == title }.map { $0.device(depth: 0) }
+        return copy
     }
 }

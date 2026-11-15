@@ -11,7 +11,10 @@ struct PortMapApp: App {
             MapView(model: model)
                 .environmentObject(power)
                 .frame(minWidth: 920, minHeight: 680)
-                .task { if model.scan == nil { await model.refresh() } }
+                .task {
+                    if model.scan == nil { await model.refresh() }
+                    model.startWatching()
+                }
                 .task { power.start() }
         }
         .defaultSize(width: 1280, height: 900)
@@ -34,11 +37,28 @@ final class MapModel: ObservableObject {
 
     var selection: Port? { scan?.ports.first { $0.id == selectedID } }
 
+    private let watcher = DeviceWatcher()
+    private var refreshAgain = false
+
+    /// Rescans whenever a device is plugged in or removed.
+    func startWatching() {
+        watcher.start { [weak self] in
+            Task { await self?.refresh() }
+        }
+    }
+
     func refresh() async {
-        guard !refreshing else { return }
+        // A change that arrives mid-scan may have been missed by it, so scan once more after.
+        guard !refreshing else { refreshAgain = true; return }
         refreshing = true
         error = nil
-        defer { refreshing = false }
+        defer {
+            refreshing = false
+            if refreshAgain {
+                refreshAgain = false
+                Task { await refresh() }
+            }
+        }
         do {
             let result = try await Task.detached(priority: .userInitiated) { try PortScan.capture() }.value
             scan = result
@@ -302,7 +322,7 @@ struct MapView: View {
             if let scan = model.scan {
                 Text(scan.version.isEmpty ? "WhatCable + macOS" : "WhatCable \(scan.version) + macOS")
                 Spacer()
-                Text("Scanned \(scan.capturedAt.formatted(date: .omitted, time: .standard))")
+                Text("Updates when devices change · scanned \(scan.capturedAt.formatted(date: .omitted, time: .standard))")
                     .monospacedDigit()
             } else {
                 Text("WhatCable + macOS")

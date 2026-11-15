@@ -28,7 +28,24 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile universal app, validate WebKit bridge, and package
-        run: ./build.sh --universal --smoke-test --zip
+        shell: bash
+        run: |
+          set -o pipefail
+          ./build.sh --universal --smoke-test --zip 2>&1 | tee "$RUNNER_TEMP/macos-build.log"
+      - name: Report build diagnostics
+        if: always()
+        run: |
+          python3 - <<'PYCODE'
+          import os, pathlib
+          log = pathlib.Path(os.environ['RUNNER_TEMP']) / 'macos-build.log'
+          text = log.read_text() if log.exists() else 'Build command did not start.'
+          errors = [line for line in text.splitlines() if 'error:' in line.lower() or 'test failed' in line.lower()]
+          for line in errors[:20]:
+              escaped = line.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+              print('::error title=macOS build::' + escaped)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('## macOS build output\n\n```text\n' + text[-60000:] + '\n```\n')
+          PYCODE
       - name: Upload app ZIP
         uses: actions/upload-artifact@v4
         with:

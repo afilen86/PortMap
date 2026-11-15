@@ -48,6 +48,7 @@ private struct SetupPortBranch: View {
     let port: Port
     let last: Bool
     @State private var showCable = false
+    @EnvironmentObject private var power: PowerMonitor
 
     private var heading: String { port.displayName }
 
@@ -63,6 +64,10 @@ private struct SetupPortBranch: View {
                         Text(heading).font(.subheadline.weight(.semibold))
                         Text(wire.label).font(.caption.weight(.medium)).foregroundStyle(wire.color)
                         ConnectorArtwork(connector: wire.connector, width: 41, height: 25)
+                        if let draw = power.power(for: port) {
+                            Label(draw.label, systemImage: "bolt.fill").labelStyle(PowerLabelStyle())
+                                .help("This port is supplying \(draw.detail), live from WhatCable Pro")
+                        }
                         Spacer(minLength: 0)
                     }
                     .frame(minHeight: 29)
@@ -1448,8 +1453,17 @@ private struct HubPortsPanel: View {
     let selectableIDs: Set<String>
     let select: (String) -> Void
     let close: () -> Void
+    @EnvironmentObject private var power: PowerMonitor
 
     private func overviewID(_ nodeID: String) -> String { model.port.id + "/" + nodeID }
+
+    /// Adds the live power on the hub's Mac port to its host row.
+    private func withLivePower(_ row: HubRowModel) -> HubRowModel {
+        guard row.id == "host", let draw = power.power(for: model.port) else { return row }
+        var live = row
+        live.note = [row.note, "⚡ Drawing \(draw.label) from the Mac"].compactMap { $0 }.joined(separator: "\n")
+        return live
+    }
 
     var body: some View {
         ScrollView {
@@ -1492,7 +1506,7 @@ private struct HubPortsPanel: View {
 
     @ViewBuilder private func rowView(_ row: HubRowModel) -> some View {
         let highlighted = row.nodeIDs.contains { tracedIDs.contains(overviewID($0)) }
-        let view = HubPortRow(row: row, highlighted: highlighted)
+        let view = HubPortRow(row: withLivePower(row), highlighted: highlighted)
         if row.id != "host", let first = row.nodeIDs.first, selectableIDs.contains(overviewID(first)) {
             Button { select(overviewID(first)) } label: { view }
                 .buttonStyle(.plain).help("Trace \(row.title)")
@@ -1590,7 +1604,7 @@ private struct HubPortRow: View {
                 if let note = row.note {
                     Text(note).font(.caption)
                         .foregroundStyle(note.contains("480") ? Color.orange : Color.secondary)
-                        .lineLimit(2).fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(4).fixedSize(horizontal: false, vertical: true)
                 }
             }
             Spacer(minLength: 0)
@@ -1662,6 +1676,7 @@ private struct OverviewMacPorts: View {
     let devices: [OverviewDevice]
     let tracedPortID: String?
     let select: (String) -> Void
+    @EnvironmentObject private var power: PowerMonitor
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
@@ -1682,6 +1697,12 @@ private struct OverviewMacPorts: View {
             if !front.isEmpty { group("FRONT", color: .orange, ports: front, compact: compact) }
             if !other.isEmpty { group("PORTS", color: .secondary, ports: other, compact: compact) }
             Spacer(minLength: 0)
+            if let mac = power.macWatts {
+                Label(String(format: "Mac %.0f W", mac), systemImage: "bolt.fill")
+                    .font(.system(size: 11, weight: .semibold)).foregroundStyle(.orange)
+                    .fixedSize()
+                    .help("Total power the Mac is drawing, live from WhatCable Pro")
+            }
         }
     }
 
@@ -1704,12 +1725,17 @@ private struct OverviewMacPorts: View {
                 .lineLimit(1)
                 .frame(maxWidth: compact ? 92 : 190, alignment: .leading)
                 .fixedSize(horizontal: !compact, vertical: false)
+            if let draw = power.power(for: port) {
+                Label(draw.label, systemImage: "bolt.fill")
+                    .labelStyle(PowerLabelStyle())
+                    .help("This port is supplying \(draw.detail), live from WhatCable Pro")
+            }
         }
         .padding(.horizontal, 8).padding(.vertical, 4)
         .background(traced ? Color.accentColor.opacity(0.16) : Color.primary.opacity(0.05), in: Capsule())
         .overlay { Capsule().strokeBorder(traced ? Color.accentColor : Color.primary.opacity(0.08)) }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(port.displayName): \(name)")
+        .accessibilityLabel("\(port.displayName): \(name)\(power.power(for: port).map { ", supplying \($0.label)" } ?? "")")
         if let device {
             Button { select(device.id) } label: { label }
                 .buttonStyle(.plain)
@@ -1717,5 +1743,17 @@ private struct OverviewMacPorts: View {
         } else {
             label
         }
+    }
+}
+
+/// Compact "⚡ 5.1 W" used next to port names.
+private struct PowerLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 2) {
+            configuration.icon.font(.system(size: 8))
+            configuration.title.font(.system(size: 10, weight: .semibold)).monospacedDigit()
+        }
+        .foregroundStyle(.orange)
+        .fixedSize()
     }
 }

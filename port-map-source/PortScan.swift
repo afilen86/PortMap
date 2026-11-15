@@ -30,7 +30,8 @@ struct PortScan {
     let isMacMini: Bool
     let capturedAt = Date()
 
-    static func capture() throws -> Self {
+    /// The WhatCable command-line helper, from the app bundle or Homebrew.
+    static func helperPath() -> String? {
         let applications = [
             NSWorkspace.shared.urlForApplication(withBundleIdentifier: "uk.whatcable.whatcable"),
             URL(fileURLWithPath: "/Applications/WhatCable.app"),
@@ -38,7 +39,11 @@ struct PortScan {
         ].compactMap { $0 }
         let helpers = applications.map { $0.appendingPathComponent("Contents/Helpers/whatcable").path }
             + ["/opt/homebrew/bin/whatcable", "/usr/local/bin/whatcable"]
-        guard let helper = helpers.first(where: FileManager.default.isExecutableFile(atPath:)) else {
+        return helpers.first(where: FileManager.default.isExecutableFile(atPath:))
+    }
+
+    static func capture() throws -> Self {
+        guard let helper = helperPath() else {
             throw ScanError("Install WhatCable in Applications, then click Refresh.")
         }
 

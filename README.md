@@ -19,6 +19,7 @@ The version and build number come from `port-map-source/Info.plist`. Bump them t
 - `port-map-source/`: the app
   - `PortMapApp.swift`: the app entry point, window and main map view
   - `PortScan.swift`: runs WhatCable and parses its JSON into ports and connections
+  - `PowerMonitor.swift`: streams `whatcable --monitor-json` (WhatCable Pro) for live power per Mac port; the power readouts hide themselves without Pro
   - `SetupView.swift`: the setup and overview diagrams, the device artwork and the routing
   - `Info.plist`, `Resources/`: bundle metadata, artwork and icon. `CalDigit*.jpg` and `Satechi*.jpg` are product photos from Adorama's listings (CalDigit Element Hub `cd500934`, Satechi ST-GNMMES `satstgnmmes`), trimmed for the hub ports panel; they're for personal use in this app
 - `OverviewCheck.swift`, `HubOverviewCheck.swift`, `port-map-verify/`: standalone layout check programs from the Codex sessions

@@ -4,12 +4,15 @@ import SwiftUI
 @main
 struct PortMapApp: App {
     @StateObject private var model = MapModel()
+    @StateObject private var power = PowerMonitor()
 
     var body: some Scene {
         Window("Port Map", id: "main") {
             MapView(model: model)
+                .environmentObject(power)
                 .frame(minWidth: 920, minHeight: 680)
                 .task { if model.scan == nil { await model.refresh() } }
+                .task { power.start() }
         }
         .defaultSize(width: 1280, height: 900)
         .commands {
@@ -56,6 +59,7 @@ private extension Connection {
 
 struct MapView: View {
     @ObservedObject var model: MapModel
+    @EnvironmentObject private var power: PowerMonitor
     @AppStorage("mapViewV12") private var mode: MapMode = .overview
     @State private var setupAll = true
 
@@ -245,6 +249,12 @@ struct MapView: View {
                     Label("Cable · \(cable)", systemImage: "cable.connector")
                         .font(.callout)
                         .foregroundStyle(.secondary)
+                }
+                if let draw = power.power(for: port) {
+                    Label("Supplying \(draw.detail) to connected devices", systemImage: "bolt.fill")
+                        .font(.callout)
+                        .foregroundStyle(.orange)
+                        .help("Live from WhatCable Pro, updated about once a second")
                 }
             }
             .padding(.horizontal, 24)

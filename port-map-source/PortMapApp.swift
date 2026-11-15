@@ -5,20 +5,27 @@ import SwiftUI
 struct PortMapApp: App {
     @StateObject private var model = MapModel()
     @StateObject private var power = PowerMonitor()
+    @AppStorage("useOrbitInterface") private var useOrbit = true
 
     var body: some Scene {
         Window("Port Map", id: "main") {
-            MapView(model: model)
-                .environmentObject(power)
-                .frame(minWidth: 920, minHeight: 680)
+            Group {
+                if useOrbit || CommandLine.arguments.contains("--smoke-test") { OrbitWebView(model: model) }
+                else { MapView(model: model).environmentObject(power) }
+            }
+                .frame(minWidth: 1100, minHeight: 760)
                 .task {
-                    if model.scan == nil { await model.refresh() }
+                    if model.scan == nil && !model.orbitDemo { await model.refresh() }
                     model.startWatching()
                 }
-                .task { power.start() }
+                .task { if !CommandLine.arguments.contains("--smoke-test") { power.start() } }
         }
-        .defaultSize(width: 1280, height: 900)
+        .defaultSize(width: 1440, height: 960)
         .commands {
+            CommandMenu("Appearance & View") {
+                Toggle("Workspace Orbit", isOn: $useOrbit)
+                Button("Show Demo Setup") { useOrbit = true; model.orbitDemo = true }
+            }
             CommandGroup(after: .newItem) {
                 Button("Refresh Connections") { Task { await model.refresh() } }
                     .keyboardShortcut("r")
@@ -34,6 +41,7 @@ final class MapModel: ObservableObject {
     @Published private(set) var error: String?
     @Published private(set) var refreshing = false
     @Published var selectedID: String?
+    @Published var orbitDemo = CommandLine.arguments.contains("--demo")
 
     var selection: Port? { scan?.ports.first { $0.id == selectedID } }
 
@@ -43,7 +51,7 @@ final class MapModel: ObservableObject {
     /// Rescans whenever a device is plugged in or removed.
     func startWatching() {
         watcher.start { [weak self] in
-            Task { await self?.refresh() }
+            Task { guard let self, !self.orbitDemo else { return }; await self.refresh() }
         }
     }
 
@@ -51,6 +59,7 @@ final class MapModel: ObservableObject {
         // A change that arrives mid-scan may have been missed by it, so scan once more after.
         guard !refreshing else { refreshAgain = true; return }
         refreshing = true
+        orbitDemo = false
         error = nil
         defer {
             refreshing = false

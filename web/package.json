@@ -7,11 +7,12 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "playwright test",
+    "test": "python3 design-tools/build-native-orbit.py && playwright test",
     "format": "prettier --write src tests *.ts *.json index.html README.md",
     "format:check": "prettier --check src tests *.ts *.json index.html README.md",
     "build:orbit": "python3 design-tools/build-orbit-appearance.py",
-    "package:orbit": "python3 design-tools/package-orbit.py"
+    "package:orbit": "python3 design-tools/package-orbit.py",
+    "build:native": "python3 design-tools/build-native-orbit.py"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

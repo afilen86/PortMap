@@ -53,7 +53,7 @@ npm run format:check
 
 ## Native bridge contract (version 1)
 
-The web UI is ready for a `WKWebView` host; **this change does not replace the existing SwiftUI interface**. The host integration is the next migration step.
+This contract describes the React explorer. The native Mac app embeds the selected Orbit page using the separate `state` adapter documented in [the macOS guide](../MACOS.md); the React explorer remains independent.
 
 Register a `WKScriptMessageHandler` named `portMap` before loading the page. When the handler exists, the web UI starts in a loading state, hides preview scenarios, and requests data:
 
@@ -124,3 +124,9 @@ npm run package:orbit
 This uses Python 3.10+ to regenerate and package the selected Orbit preview into `release/PortMap-Orbit-Preview-<version>.zip`, with opening instructions, image notices, a source manifest, and a SHA-256 sidecar. The HTML opens directly without a server. Node is needed for development and browser tests, but the packager itself has no Node dependency.
 
 The `Publish Orbit preview` GitHub Actions workflow checks tags against `package.json`, runs the production build and browser suite, then publishes the ZIP and checksum as a prerelease. It uses GitHub's repository-scoped workflow token; no personal release token is committed. See [release notes](releases/orbit-preview-v0.1.0.md).
+
+## Native Mac app integration
+
+The chosen Orbit interface is now bundled into a `WKWebView` by `build.sh`. The native adapter uses the existing Swift device inventory and watcher, with a separate versioned `state` message for physical nodes, errors, demo status, and refresh state. The earlier React schema remains available for that browser UI. See [the macOS guide](../MACOS.md).
+
+`npm test` regenerates the native bundle with Python before the browser checks. The native adapter tests simulate host messages; the macOS workflow separately compiles and smoke-tests the real app.

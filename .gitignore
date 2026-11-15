@@ -32,3 +32,10 @@ web/design-tools/__pycache__/
 
 # Offline preview release packages
 web/release/
+
+# Bundled native web assets and Mac build kits
+web/native/dist/
+macos-build-kit/
+
+# Build-kit generator bytecode
+tools/__pycache__/

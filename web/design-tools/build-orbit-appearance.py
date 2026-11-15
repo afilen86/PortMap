@@ -84,6 +84,11 @@ body[data-variant=afterhours] .appearance-controls button[aria-pressed=true]{bac
 </style>''')
 # Keep the correct initial document theme for clients with JavaScript disabled.
 replace('<body data-design="orbit" data-variant="glacier">', '<body data-design="orbit" data-variant="clay">')
-OUT.parent.mkdir(parents=True, exist_ok=True)
-OUT.write_text(page)
-print(f'Built {OUT} ({OUT.stat().st_size:,} bytes); light=Clay Studio, dark=After Hours')
+def main():
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(page)
+    print(f'Built {OUT} ({OUT.stat().st_size:,} bytes); light=Clay Studio, dark=After Hours')
+
+
+if __name__ == '__main__':
+    main()

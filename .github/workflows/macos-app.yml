@@ -1,0 +1,37 @@
+name: Build macOS Orbit app
+
+on:
+  push:
+    branches: [macos-orbit-app]
+  pull_request:
+    paths:
+      [
+        "port-map-source/**",
+        "web/native/**",
+        "web/design-tools/**",
+        "build.sh",
+        ".github/workflows/macos-app.yml",
+      ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile universal app, validate WebKit bridge, and package
+        run: ./build.sh --universal --smoke-test --zip
+      - name: Upload app ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: PortMap-macOS-universal
+          path: build/PortMap-*-build*.zip
+          if-no-files-found: error

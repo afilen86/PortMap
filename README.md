@@ -1,6 +1,12 @@
 # Port Map
 
-A SwiftUI Mac app that maps what is plugged into this Mac: each port, the hubs and devices behind it, and the cable path between them. Port data comes from the WhatCable helper, which must be installed (the app in /Applications, or `whatcable` from Homebrew).
+A Mac app with a native hardware backend and a locally bundled Workspace Orbit web interface that maps what is plugged into this Mac: each port, the hubs and devices behind it, and the cable path between them. Port data comes from the WhatCable helper, which must be installed (the app in /Applications, or `whatcable` from Homebrew).
+
+## Native Workspace Orbit app
+
+The macOS app now bundles the selected Orbit interface in a `WKWebView` and connects it to the existing WhatCable scanner and device watcher. Build on your Mac with `./build.sh --zip --run`, or double-click **Build Port Map.command**. See [the macOS guide](MACOS.md) for prerequisites, demo mode, native validation, and signing details.
+
+The macOS build still needs to be compiled and smoke-tested on a Mac; browser tests alone don't verify an `.app` binary. A `Build macOS Orbit app` workflow is included for that check.
 
 ## Workspace Orbit preview release
 
@@ -30,7 +36,7 @@ npm run build
 npm test          # Chromium browser checks
 ```
 
-Visual changes can be developed and checked on Linux, Windows, or macOS. The web UI includes a validated, versioned `WKWebView` bridge contract; embedding it into the Mac app is a separate next step. The existing SwiftUI app still builds as before. See [the web UI guide](web/README.md) for the data format, limitations, and integration instructions.
+Visual changes can be developed and checked on Linux, Windows, or macOS. The Mac app now embeds the selected Orbit page; the React explorer and earlier mockups remain available for independent browser development. See [the web UI guide](web/README.md) for the data format, limitations, and integration instructions.
 
 ## Build
 
@@ -40,7 +46,7 @@ Visual changes can be developed and checked on Linux, Windows, or macOS. The web
 ./build.sh --zip    # build and zip to build/PortMap-<version>-build<n>.zip
 ```
 
-Requires the Xcode command-line tools (Swift 6, macOS 14+, Apple silicon).
+Requires macOS 14+, Xcode Command Line Tools (Swift 6), and Python 3. Use `--universal` to include Apple silicon and Intel binaries, or `--smoke-test` to exercise the real WebKit window.
 
 The version and build number come from `port-map-source/Info.plist`. Bump them there before a release.
 

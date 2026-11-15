@@ -1998,3 +1998,64 @@ private extension SetupDevice {
         return copy
     }
 }
+
+// MARK: - Orbit web bridge
+
+/// Reuse the native physical-device inventory, including manual links and interface condensation.
+/// Screen positions are computed by the web UI, never used to infer hardware topology.
+@MainActor
+func orbitSnapshot(scan: PortScan) -> [String: Any] {
+    let inventory = OverviewInventory(scan: scan)
+    let nodes: [[String: Any]] = inventory.devices.map { device in
+        let image: String
+        switch device.art {
+        case .macMini: image = "mac"
+        case .element: image = "element"
+        case .satechi: image = "satechi"
+        case .expansion: image = "expansion"
+        case .lacie: image = "lacie"
+        case .nvme: image = "nvme"
+        case .s4: image = "s4"
+        case .z1: image = "z1"
+        case .x1: image = "x1"
+        case .monitor: image = "monitor"
+        case .ethernet: image = "ethernet"
+        case .hub: image = "hub"
+        case .twister: image = "twister"
+        case nil:
+            switch device.photo {
+            case "KlipschFives": image = "speakers"
+            case "MaestroDMX": image = "maestro"
+            case "Scarlett4i4": image = "scarlett"
+            default: image = device.parentID == nil ? "computer" : device.icon == "externaldrive" ? "nvme" : "unknown"
+            }
+        }
+        let wire = device.wire?.label ?? ""
+        let kind: String
+        if device.parentID == nil { kind = "host" }
+        else if device.isHub { kind = "hub" }
+        else if device.art == .monitor { kind = "display" }
+        else if device.manual { kind = wire.uppercased().contains("USB") ? "usb" : "audio" }
+        else if [.s4, .z1, .x1, .twister].contains(device.art) { kind = "controller" }
+        else if [.expansion, .lacie, .nvme].contains(device.art) || device.icon == "externaldrive" { kind = "storage" }
+        else if device.art == .ethernet { kind = "network" }
+        else { kind = "device" }
+        var node: [String: Any] = ["id": device.id, "name": device.title,
+                                   "image": image, "kind": kind, "wire": wire, "speed": "",
+                                   "manual": device.manual, "indirect": device.indirect,
+                                   "generic": ["monitor", "ethernet", "nvme", "computer", "unknown"].contains(image)]
+        if let parent = device.parentID { node["parent"] = parent }
+        if device.parentID == nil { node["sub"] = "Host computer" }
+        if device.art == .monitor {
+            node["slot"] = device.port?.group == "Display" ? "hdmi" : device.title.lowercased().contains("12.3") ? "display12" : "displayDP"
+        } else if device.art == .ethernet {
+            node["slot"] = device.title.contains("2.5") ? "ether25" : "ether5"
+        } else if device.title.lowercased() == "satechi disk media" { node["slot"] = "satechiSSD" }
+        else if device.title.lowercased() == "usb storage" { node["slot"] = "usbStorage" }
+        else { node["slot"] = image }
+        return node
+    }
+    return ["nodes": nodes, "capturedAt": ISO8601DateFormatter().string(from: scan.capturedAt),
+            "source": scan.version.isEmpty ? "WhatCable + macOS" : "WhatCable \(scan.version) + macOS",
+            "connectedPorts": scan.ports.filter(\.connected).count, "totalPorts": scan.ports.count]
+}

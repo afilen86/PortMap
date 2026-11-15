@@ -1,20 +1,28 @@
 [
   {
-    "id": "scarlett-4i4",
-    "title": "Focusrite Scarlett 4i4",
+    "id": "klipsch-the-fives",
+    "title": "Klipsch The Fives (pair)",
     "parent": "Traktor Kontrol S4 MK3",
     "cable": "RCA",
     "from": "RCA from S4 MK3 rear",
-    "photo": "Scarlett4i4",
-    "icon": "hifispeaker"
-  },
-  {
-    "id": "klipsch-the-fives",
-    "title": "Klipsch The Fives (pair)",
-    "parent": "Focusrite Scarlett 4i4",
-    "cable": "Line out",
-    "from": "From Scarlett 4i4 outputs",
     "photo": "KlipschFives",
     "icon": "hifispeaker.2"
+  },
+  {
+    "id": "maestrodmx",
+    "title": "MaestroDMX",
+    "parent": "Traktor Kontrol S4 MK3",
+    "cable": "Booth TRS → RCA",
+    "from": "S4 MK3 Booth out (TRS) to RCA in",
+    "icon": "light.beacon.max"
+  },
+  {
+    "id": "scarlett-4i4",
+    "title": "Focusrite Scarlett 4i4",
+    "parent": "MaestroDMX",
+    "cable": "USB",
+    "from": "USB to MaestroDMX",
+    "photo": "Scarlett4i4",
+    "icon": "hifispeaker"
   }
 ]

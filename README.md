@@ -22,7 +22,7 @@ The version and build number come from `port-map-source/Info.plist`. Bump them t
   - `DeviceWatcher.swift`: rescans automatically when a USB or Thunderbolt device is plugged in or removed, or displays change
   - `PowerMonitor.swift`: streams `whatcable --monitor-json` (WhatCable Pro) for live power per Mac port; the power readouts hide themselves without Pro
   - `SetupView.swift`: the setup and overview diagrams, the device artwork and the routing
-  - `Resources/ManualConnections.json`: connections macOS can't detect (analog audio). Each entry names its `parent` device by title, the `cable`, and a `photo`; edit this file to add more
+  - `Resources/ManualConnections.json`: connections macOS can't detect (analog audio, or USB between two other devices). Each entry names its `parent` device by title, the `cable`, and a `photo`; edit this file to add more
   - `Info.plist`, `Resources/`: bundle metadata, artwork and icon. `CalDigit*.jpg` and `Satechi*.jpg` are product photos from Adorama's listings (CalDigit Element Hub `cd500934`, Satechi ST-GNMMES `satstgnmmes`), trimmed for the hub ports panel. `Scarlett4i4.jpg` is from Focusrite's product page and `KlipschFives.jpg` from Klipsch's; they're for personal use in this app
 - `OverviewCheck.swift`, `HubOverviewCheck.swift`, `port-map-verify/`: standalone layout check programs from the Codex sessions
 - `MakePortMapIcon.swift`, `PortMap.iconset/`: icon generation

@@ -697,7 +697,7 @@ private struct OverviewInventory {
             || lowerTitle.contains("branch") || ["unnamed usb device", "usb billboard device"].contains(lowerTitle)
         // Preserve named endpoints even when no model-specific illustration exists.
         let namedEndpoint = node.children.isEmpty && !knownInterface
-        let physical = node.art != nil || node.photo != nil || isStorageEndpoint || identifiedHub || namedEndpoint
+        let physical = node.manual || node.art != nil || node.photo != nil || isStorageEndpoint || identifiedHub || namedEndpoint
         var nextParent = parent
         if physical {
             let category = node.manual ? 4 : node.art == .monitor ? 0 : [.s4, .z1, .x1, .twister].contains(node.art) ? 1 : node.art == .satechi ? 2 : 3
@@ -1815,7 +1815,7 @@ private struct PowerLabelStyle: LabelStyle {
 
 // MARK: - Hand-entered connections
 
-/// Connections macOS can't see, such as analog audio. Listed in Resources/ManualConnections.json:
+/// Connections macOS can't see, such as analog audio or gear plugged into another device. Listed in Resources/ManualConnections.json:
 /// each entry hangs off the device whose title equals `parent` (a detected device or another entry).
 private struct ManualConnection: Decodable {
     let id: String
@@ -1835,7 +1835,7 @@ private struct ManualConnection: Decodable {
 
     func device(depth: Int) -> SetupDevice {
         let wire = SetupWire(label: cable,
-                             explanation: "Analog audio cable, added by hand. macOS can't detect it, so it isn't verified.",
+                             explanation: "Cable added by hand. macOS can't detect it, so it isn't verified.",
                              color: .orange)
         let children = depth < 6 ? Self.all.filter { $0.parent == title && $0.id != id }.map { $0.device(depth: depth + 1) } : []
         return SetupDevice(id: "manual-\(id)", title: title, detail: "Added by hand · not detected by macOS",

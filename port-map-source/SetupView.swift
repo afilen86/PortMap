@@ -906,30 +906,50 @@ private struct OverviewConnections: View {
     let frames: [String: CGRect]
     let selectedID: String?
     let showAll: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// One cable, resolved for drawing.
+    private struct Line {
+        let path: Path
+        let ends: [CGPoint]
+        let active: Bool
+        let color: Color
+        let indirect: Bool
+        let label: String?
+        let labelPoint: CGPoint?
+        let showsLabel: Bool
+        let speed: Double
+    }
 
     var body: some View {
-        Canvas { context, _ in
-            let traced = OverviewTrace(devices: devices, targetID: selectedID ?? "host").ids
-            let edges = OverviewRouting.edges(devices: devices, frames: frames)
-            // Draw the focused route last, on top of unrelated paths.
-            for edge in edges.sorted(by: { (traced.contains($0.childID) ? 1 : 0) < (traced.contains($1.childID) ? 1 : 0) }) {
-                let active = traced.contains(edge.childID) && traced.contains(edge.parentID)
-                guard showAll || active, let start = edge.points.first,
-                      let child = devices.first(where: { $0.id == edge.childID }) else { continue }
-                var path = Path(); path.move(to: start)
-                for point in edge.points.dropFirst() { path.addLine(to: point) }
-                let color = active ? Color.accentColor : (child.wire?.color ?? .secondary)
-                let style = StrokeStyle(lineWidth: active ? 3.5 : 1.6, lineCap: .round, lineJoin: .round,
-                                        dash: child.indirect ? [7, 5] : [])
-                if active { context.stroke(path, with: .color(Color(nsColor: .windowBackgroundColor)), style: StrokeStyle(lineWidth: 7, lineCap: .round, lineJoin: .round)) }
-                context.stroke(path, with: .color(color.opacity(active ? 1 : 0.24)), style: style)
-                for point in [edge.points.first, edge.points.last].compactMap({ $0 }) {
-                    context.fill(Path(ellipseIn: CGRect(x: point.x - 3, y: point.y - 3, width: 6, height: 6)), with: .color(color.opacity(active ? 1 : 0.35)))
+        // Routing is worked out once per layout, not once per animation frame.
+        let lines = resolvedLines()
+        let animated = !reduceMotion
+        ZStack {
+            Canvas { context, _ in
+                for line in lines {
+                    let style = StrokeStyle(lineWidth: line.active ? 3.5 : 1.6, lineCap: .round, lineJoin: .round,
+                                            dash: line.indirect ? [7, 5] : [])
+                    if line.active {
+                        context.stroke(line.path, with: .color(Color(nsColor: .windowBackgroundColor)),
+                                       style: StrokeStyle(lineWidth: 7, lineCap: .round, lineJoin: .round))
+                    }
+                    context.stroke(line.path, with: .color(line.color.opacity(line.active ? (animated ? 0.45 : 1) : 0.24)), style: style)
+                    for point in line.ends {
+                        context.fill(Path(ellipseIn: CGRect(x: point.x - 3, y: point.y - 3, width: 6, height: 6)),
+                                     with: .color(line.color.opacity(line.active ? 1 : 0.35)))
+                    }
                 }
-                // Hand-entered cables keep their label even when not traced: it is the only place the cable type shows.
-                if active || child.manual, let label = edge.label, let point = edge.labelPoint {
-                    let resolved = context.resolve(Text(label).font(.system(size: active ? 12 : 11, weight: .semibold))
-                        .foregroundColor(active ? .accentColor : color))
+            }
+            if animated {
+                // Core Animation moves the pulses, so they cost almost no CPU.
+                FlowPulses(pulses: lines.filter(\.active).map { FlowPulses.Pulse(path: $0.path, speed: $0.speed) })
+            }
+            Canvas { context, _ in
+                for line in lines where line.showsLabel {
+                    guard let label = line.label, let point = line.labelPoint else { continue }
+                    let resolved = context.resolve(Text(label).font(.system(size: line.active ? 12 : 11, weight: .semibold))
+                        .foregroundColor(line.color))
                     let textSize = resolved.measure(in: CGSize(width: 240, height: 24))
                     let rect = CGRect(x: point.x - textSize.width / 2 - 7, y: point.y - 10, width: textSize.width + 14, height: 20)
                     context.fill(Path(roundedRect: rect, cornerRadius: 6), with: .color(Color(nsColor: .windowBackgroundColor)))
@@ -938,6 +958,95 @@ private struct OverviewConnections: View {
             }
         }
         .allowsHitTesting(false).accessibilityHidden(true)
+    }
+
+    private func resolvedLines() -> [Line] {
+        let traced = OverviewTrace(devices: devices, targetID: selectedID ?? "host").ids
+        let edges = OverviewRouting.edges(devices: devices, frames: frames)
+        // The focused route goes last, so it is drawn on top of unrelated paths.
+        return edges.sorted { (traced.contains($0.childID) ? 1 : 0) < (traced.contains($1.childID) ? 1 : 0) }.compactMap { edge in
+            let active = traced.contains(edge.childID) && traced.contains(edge.parentID)
+            guard showAll || active, let start = edge.points.first,
+                  let child = devices.first(where: { $0.id == edge.childID }) else { return nil }
+            var path = Path(); path.move(to: start)
+            for point in edge.points.dropFirst() { path.addLine(to: point) }
+            // Hand-entered cables keep their label even when not traced: it is the only place the cable type shows.
+            return Line(path: path, ends: [edge.points.first, edge.points.last].compactMap { $0 }, active: active,
+                        color: active ? Color.accentColor : (child.wire?.color ?? .secondary), indirect: child.indirect,
+                        label: edge.label, labelPoint: edge.labelPoint, showsLabel: active || child.manual,
+                        speed: Self.flowSpeed(child.wire?.label))
+        }
+    }
+
+    /// Points per second for the pulses on a traced cable: faster links flow faster.
+    /// This shows the link's rated speed and direction away from the Mac, not measured traffic.
+    private static func flowSpeed(_ label: String?) -> Double {
+        guard let label, let match = label.firstMatch(of: #/([0-9.]+)\s*(Gb|Mb)/s/#), let value = Double(match.1) else { return 36 }
+        let mbps = match.2 == "Gb" ? value * 1000 : value
+        switch mbps {
+        case 20_000...: return 110
+        case 5_000...: return 80
+        case 1_000...: return 60
+        case 100...: return 40
+        default: return 24
+        }
+    }
+}
+
+/// Glowing dashes that travel along the traced cables, from the Mac side toward the device.
+private struct FlowPulses: NSViewRepresentable {
+    struct Pulse: Equatable {
+        let path: Path
+        let speed: Double // points per second
+    }
+
+    let pulses: [Pulse]
+    @Environment(\.colorScheme) private var scheme // redraw when the appearance changes
+
+    final class FlippedView: NSView {
+        var shown: [Pulse] = []
+        var shownDark: Bool?
+        override var isFlipped: Bool { true }
+        override func hitTest(_ point: NSPoint) -> NSView? { nil }
+    }
+
+    func makeNSView(context: Context) -> FlippedView {
+        let view = FlippedView()
+        view.wantsLayer = true
+        return view
+    }
+
+    func updateNSView(_ view: FlippedView, context: Context) {
+        let dark = scheme == .dark
+        guard view.shown != pulses || view.shownDark != dark, let root = view.layer else { return }
+        view.shown = pulses
+        view.shownDark = dark
+        root.sublayers?.forEach { $0.removeFromSuperlayer() }
+        var accent = NSColor.controlAccentColor.cgColor
+        view.effectiveAppearance.performAsCurrentDrawingAppearance { accent = NSColor.controlAccentColor.cgColor }
+        let dash: [CGFloat] = [9, 15]
+        for pulse in pulses {
+            // The wide faint stroke under the sharp one reads as a glow.
+            for (width, opacity) in [(CGFloat(8), Float(0.28)), (CGFloat(3.5), Float(1))] {
+                let layer = CAShapeLayer()
+                layer.path = pulse.path.cgPath
+                layer.fillColor = nil
+                layer.strokeColor = accent
+                layer.opacity = opacity
+                layer.lineWidth = width
+                layer.lineCap = .round
+                layer.lineJoin = .round
+                layer.lineDashPattern = dash.map { NSNumber(value: Double($0)) }
+                let flow = CABasicAnimation(keyPath: "lineDashPhase")
+                flow.fromValue = 0
+                flow.toValue = -dash.reduce(0, +)
+                flow.duration = Double(dash.reduce(0, +)) / max(pulse.speed, 1)
+                flow.repeatCount = .infinity
+                flow.isRemovedOnCompletion = false
+                layer.add(flow, forKey: "flow")
+                root.addSublayer(layer)
+            }
+        }
     }
 }
 

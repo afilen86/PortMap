@@ -192,7 +192,7 @@ struct MapView: View {
                                         .foregroundStyle(port.connected ? Color.accentColor : .secondary)
                                         .frame(width: 22)
                                     VStack(alignment: .leading, spacing: 3) {
-                                        Text(port.position)
+                                        Text(port.shortName)
                                             .font(.subheadline.weight(.semibold))
                                         Text(port.label)
                                             .font(.callout)
@@ -273,7 +273,7 @@ struct MapView: View {
     }
 
     private func portTitle(_ port: Port) -> some View {
-        Text(port.group == "Rear Thunderbolt" ? "Rear \(port.position.lowercased())" : "\(port.group == "Display" ? "Rear" : port.group) \(port.position)")
+        Text(port.displayName)
             .font(.title2.weight(.semibold))
             .accessibilityAddTraits(.isHeader)
     }

@@ -49,13 +49,7 @@ private struct SetupPortBranch: View {
     let last: Bool
     @State private var showCable = false
 
-    private var heading: String {
-        switch port.group {
-        case "Rear Thunderbolt": "Rear \(port.position.lowercased())"
-        case "Display": "Rear HDMI"
-        default: "\(port.group) \(port.position)"
-        }
-    }
+    private var heading: String { port.displayName }
 
     var body: some View {
         let devices = SetupDevice.nodes(for: port)
@@ -528,6 +522,9 @@ struct OverviewView: View {
             .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal, 24).padding(.bottom, 5)
             .accessibilityIdentifier("connection-breadcrumb")
+            OverviewMacPorts(scan: scan, devices: items.devices,
+                             tracedPortID: trace.devices.dropFirst().first?.port?.id, select: select)
+                .padding(.horizontal, 24).padding(.bottom, 6)
             HStack(spacing: 0) {
                 GeometryReader { geometry in
                     let layout = OverviewLayout(items: items.devices)
@@ -616,8 +613,7 @@ private struct OverviewDevice: Identifiable {
     var subtitle: String {
         if let hubSocket { return hubSocket }
         guard let port else { return "Host computer" }
-        let location = port.group == "Display" ? "HDMI" : port.group == "Rear Thunderbolt" ? "Rear \(port.position.lowercased())" : "\(port.group) \(port.position)"
-        return location
+        return port.displayName
     }
 }
 
@@ -894,6 +890,9 @@ private struct OverviewCard: View {
         }
         .buttonStyle(.plain)
         .help("Trace \(device.title) · \(device.subtitle)")
+        .overlay(alignment: .topLeading) {
+            if let port = device.port { MacSideBadge(port: port).padding(8) }
+        }
         .overlay(alignment: .topTrailing) {
             Button { showDetails = true } label: {
                 Image(systemName: "info.circle").font(.system(size: 14)).padding(7)
@@ -902,7 +901,8 @@ private struct OverviewCard: View {
             .help("Inspect \(device.title)")
             .accessibilityLabel("Inspect \(device.title)")
         }
-        .accessibilityLabel("\(device.title), \(device.subtitle)")
+        .accessibilityLabel([device.title, device.subtitle, device.port.map { "plugged into the Mac's \($0.displayName.lowercased())" }]
+            .compactMap { $0 }.joined(separator: ", "))
         .accessibilityAddTraits(selected ? .isSelected : [])
         .popover(isPresented: $showDetails) { OverviewInspector(device: device) }
     }
@@ -1042,6 +1042,7 @@ private struct OverviewStack: View {
                 .accessibilityLabel("Trace Mac mini sitting on Satechi Stand & Hub")
             }
             HStack {
+                if let port = stand.port { MacSideBadge(port: port) }
                 Button { select(stand.id) } label: {
                     VStack(spacing: 2) {
                         Text(stand.title).font(.system(size: 13, weight: .semibold))
@@ -1360,7 +1361,7 @@ private struct HubPanelModel {
     }
 
     private static func macLocation(_ port: Port) -> String {
-        port.group == "Rear Thunderbolt" ? "rear \(port.position.lowercased())" : "\(port.group) \(port.position)"
+        port.displayName.prefix(1).lowercased() + port.displayName.dropFirst()
     }
 
     private static func element(_ hub: SetupDevice, port: Port) -> Self {
@@ -1633,5 +1634,88 @@ private struct SocketGlyph: View {
         }
         .frame(width: 34, height: 15)
         .accessibilityHidden(true)
+    }
+}
+
+// MARK: - Front / rear
+
+private struct MacSideBadge: View {
+    let port: Port
+
+    var body: some View {
+        if let text = port.sideBadge {
+            Text(text)
+                .font(.system(size: 9, weight: .heavy)).tracking(0.4)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 6).padding(.vertical, 2.5)
+                .background(port.isFront ? Color.orange : Color.indigo, in: Capsule())
+                .fixedSize()
+                .help("Plugged into the Mac's \(port.displayName.lowercased())")
+                .accessibilityHidden(true)
+        }
+    }
+}
+
+/// One row naming every port on the Mac, split into rear and front, with what is plugged into each.
+private struct OverviewMacPorts: View {
+    let scan: PortScan
+    let devices: [OverviewDevice]
+    let tracedPortID: String?
+    let select: (String) -> Void
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            row(compact: false)
+            row(compact: true)
+            ScrollView(.horizontal, showsIndicators: false) { row(compact: true) }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Mac ports")
+    }
+
+    private func row(compact: Bool) -> some View {
+        let rear = scan.ports.filter(\.isRear)
+        let front = scan.ports.filter(\.isFront)
+        let other = scan.ports.filter { !$0.isRear && !$0.isFront }
+        return HStack(spacing: 16) {
+            if !rear.isEmpty { group("REAR", color: .indigo, ports: rear, compact: compact) }
+            if !front.isEmpty { group("FRONT", color: .orange, ports: front, compact: compact) }
+            if !other.isEmpty { group("PORTS", color: .secondary, ports: other, compact: compact) }
+            Spacer(minLength: 0)
+        }
+    }
+
+    private func group(_ title: String, color: Color, ports: [Port], compact: Bool) -> some View {
+        HStack(spacing: 6) {
+            Text(title).font(.system(size: 10, weight: .heavy)).tracking(0.5).foregroundStyle(color)
+                .fixedSize()
+            ForEach(ports) { port in chip(port, compact: compact) }
+        }
+    }
+
+    @ViewBuilder private func chip(_ port: Port, compact: Bool) -> some View {
+        let device = devices.first { $0.parentID == "host" && $0.port?.id == port.id }
+        let traced = port.id == tracedPortID
+        let name = device?.title ?? (port.connected ? port.label : "Empty")
+        let label = HStack(spacing: 5) {
+            Text(port.shortName).font(.system(size: 11, weight: .semibold)).fixedSize()
+            Text(name).font(.system(size: 11))
+                .foregroundStyle(device == nil ? Color.secondary : Color.primary)
+                .lineLimit(1)
+                .frame(maxWidth: compact ? 92 : 190, alignment: .leading)
+                .fixedSize(horizontal: !compact, vertical: false)
+        }
+        .padding(.horizontal, 8).padding(.vertical, 4)
+        .background(traced ? Color.accentColor.opacity(0.16) : Color.primary.opacity(0.05), in: Capsule())
+        .overlay { Capsule().strokeBorder(traced ? Color.accentColor : Color.primary.opacity(0.08)) }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(port.displayName): \(name)")
+        if let device {
+            Button { select(device.id) } label: { label }
+                .buttonStyle(.plain)
+                .help("Trace \(device.title) · \(port.displayName)")
+        } else {
+            label
+        }
     }
 }

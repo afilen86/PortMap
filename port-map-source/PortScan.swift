@@ -307,3 +307,32 @@ private func scanMountedStorage() -> Storage {
     }
     return storage
 }
+
+// MARK: - Front / rear naming
+
+extension Port {
+    var isRear: Bool { group == "Rear Thunderbolt" || group == "Display" }
+    var isFront: Bool { group == "Front USB-C" }
+
+    /// Name within its group: "Left", "HDMI", "Port 5".
+    var shortName: String {
+        if isRear { return position }
+        return position.hasPrefix("@") ? "Port \(position.dropFirst())" : position
+    }
+
+    /// Full name on the Mac: "Rear left", "Rear HDMI", "Front USB-C (port 5)".
+    var displayName: String {
+        switch group {
+        case "Rear Thunderbolt": "Rear \(position.lowercased())"
+        case "Display": "Rear HDMI"
+        default: "\(group) (\(shortName.lowercased()))"
+        }
+    }
+
+    /// Badge text such as "REAR · LEFT" or "FRONT", nil when the Mac's layout is unknown.
+    var sideBadge: String? {
+        if isRear { return "REAR · \(shortName.uppercased())" }
+        if isFront { return "FRONT" }
+        return nil
+    }
+}
